@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-Content \"e:\\\\Web Sources\\\\Company Profile\\\\Index.html\")",
+      "Bash(Measure-Object -Line)",
+      "PowerShell(\\(Get-Content \"e:\\\\Web Sources\\\\Company Profile\\\\Index.html\"\\).Count)"
+    ]
+  }
+}
