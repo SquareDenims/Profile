@@ -1,0 +1,2268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Square Denims – Business Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet">
+
+<!--
+  ╔═══════════════════════════════════════════════════════════════════╗
+  ║         INDEX.HTML — SQUARE DENIMS BUSINESS PROFILE              ║
+  ╠═══════════════════════════════════════════════════════════════════╣
+  ║  STYLESHEET  <style> ............................................. ║
+  ║    Color palette & CSS variables                                  ║
+  ║    Custom cursor · Progress bar · Deck & slides                   ║
+  ║    Tags · Typography · Cards · Icon wrap · Animations            ║
+  ║    Slide 1 cover CSS · Partners marquee · Certifications          ║
+  ║    Donut chart · Settings panel · Navigation · Responsive         ║
+  ╠═══════════════════════════════════════════════════════════════════╣
+  ║  HTML BODY — UI SHELL  <body> .................................... ║
+  ║    Cursor divs · Progress bar · Settings button & panel           ║
+  ║    Nav dots · Arrow buttons                                       ║
+  ╠═══════════════════════════════════════════════════════════════════╣
+  ║  SLIDE DECK  <div id="deck"> ..................................... ║
+  ║    Slide  1  #slide-1   — Cover                                   ║
+  ║    Slide  2  #slide-2   — Square Group Story                      ║
+  ║    Slide  3  #slide-3   — Group Turnover (Donut)                  ║
+  ║    Slide  4  #slide-4   — Textile Division                        ║
+  ║    Slide  5  #slide-5   — Square Denims Intro                     ║
+  ║    Slide  6  #slide-6   — Vertical Setup                          ║
+  ║    Slide  7  #slide-7   — Fabric Capacity                         ║
+  ║    Slide  8  #slide-8   — Operational Strengths                   ║
+  ║    Slide  9  #slide-9   — Sustainability                          ║
+  ║    Slide 10  #slide-10  — Product Range                           ║
+  ║    Slide 11  #slide-11  — Certifications                          ║
+  ║    Slide 12  #slide-12  — Business Partners (Marquee)             ║
+  ║    Slide 13  #slide-13  — Thank You                               ║
+  ╠═══════════════════════════════════════════════════════════════════╣
+  ║  JAVASCRIPT  <script> ............................................ ║
+  ║    T object    — base translations (9 languages, one-liner each)  ║
+  ║    ext block   — extended keys for all slides & languages         ║
+  ║    setLang()   — apply language to DOM                            ║
+  ║    Slide engine — goTo(), keyboard nav, dot nav                   ║
+  ║    Autoplay · Donut chart · Partners marquee · Cursor             ║
+  ╚═══════════════════════════════════════════════════════════════════╝
+-->
+
+<style>
+/* ============================================================
+   COLOR PALETTE
+   steel-azure:       #004e98  — Primary / Brand
+   pumpkin-spice:     #ff6700  — Accent / CTA
+   platinum:          #ebebeb  — Light surface / Background
+   cornflower-ocean:  #3a6ea5  — Secondary blue / Hover
+   ============================================================ */
+:root {
+  --primary:     #004e98;     /* steel-azure */
+  --secondary:   #3a6ea5;     /* cornflower-ocean */
+  --accent:      #ff6700;     /* pumpkin-spice */
+  --platinum:    #ebebeb;     /* platinum */
+
+  /* Derived */
+  --primary-dark:   #003670;
+  --primary-light:  #dce8f5;
+  --accent-light:   #fff0e6;
+  --white:          #ffffff;
+  --gray:           #f5f7fa;
+  --text-dark:      #0a1628;
+  --text-mid:       #2e4a6a;
+  --text-soft:      #6b8aaa;
+
+  /* Surfaces */
+  --surface:        #ffffff;
+  --surface-2:      #f0f4f9;
+  --border:         rgba(0,78,152,0.14);
+  --border-soft:    rgba(0,78,152,0.08);
+
+  /* Shadows */
+  --shadow-sm:   0 2px 10px rgba(0,78,152,0.09);
+  --shadow-md:   0 6px 24px rgba(0,78,152,0.15);
+  --shadow-lg:   0 16px 48px rgba(0,78,152,0.2);
+  --shadow-xl:   0 24px 72px rgba(0,78,152,0.26);
+
+  --ease:        cubic-bezier(0.22,1,0.36,1);
+  --font:        'Inter', sans-serif;
+  --font-body:   'Inter', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%; height: 100%; overflow: hidden;
+  font-family: var(--font); background: var(--platinum);
+  -webkit-font-smoothing: antialiased;
+}
+* { cursor: none !important; }
+
+/* ── CUSTOM CURSOR ── */
+#cursor {
+  position: fixed; z-index: 9999; pointer-events: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--primary); opacity: 0.9;
+  transform: translate(-50%,-50%);
+  transition: width 0.18s var(--ease), height 0.18s var(--ease), opacity 0.18s;
+}
+#cursor-ring {
+  position: fixed; z-index: 9998; pointer-events: none;
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1.5px solid var(--primary); opacity: 0.55;
+  transform: translate(-50%,-50%);
+  transition: width 0.3s var(--ease), height 0.3s var(--ease), opacity 0.3s, border-color 0.3s;
+}
+/* Dark slides: platinum cursor */
+body.dark-bg #cursor { background: var(--platinum); }
+body.dark-bg #cursor-ring { border-color: var(--platinum); }
+
+/* ── PROGRESS BAR ── */
+#progress-bar {
+  position: fixed; top: 0; left: 0; height: 3px; z-index: 2000;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  transition: width 0.55s var(--ease);
+  box-shadow: 0 0 12px rgba(255,103,0,0.5);
+}
+
+/* ── DECK & SLIDES ── */
+#deck { position: fixed; inset: 0; z-index: 1; }
+.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  padding: 64px 80px 84px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.65s var(--ease), transform 0.65s var(--ease);
+  transform: translateY(24px);
+  overflow: hidden;
+}
+.slide.active { opacity: 1; pointer-events: all; transform: translateY(0); }
+.slide.exit   { opacity: 0; transform: translateY(-16px); pointer-events: none; }
+
+/* Slide backgrounds */
+.slide-light { background: var(--platinum); }
+.slide-dark  { background: var(--primary); }
+
+.slide-num {
+  position: absolute; top: 22px; right: 32px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.06em; opacity: 0;
+}
+.slide.active .slide-num { animation: fadeIn 0.5s var(--ease) 0.3s both; }
+.slide-dark  .slide-num { color: rgba(255,255,255,0.28); }
+.slide-light .slide-num { color: var(--text-soft); }
+
+.slide-inner { width: 100%; max-width: 1220px; }
+
+/* ── TAGS ── */
+.tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px;
+}
+.tag-light { color: var(--primary); background: rgba(0,78,152,0.1); border: 1px solid rgba(0,78,152,0.2); }
+.tag-dark  { color: rgba(255,255,255,0.75); background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); }
+.tag-orange { color: var(--accent); background: var(--accent-light); border: 1px solid rgba(255,103,0,0.25); }
+.tag-green  { color: #00966d; background: #e6f9f4; border: 1px solid rgba(0,150,109,0.2); }
+
+/* ── TYPOGRAPHY ── */
+.h-xl  { font-size: clamp(42px,5.5vw,78px); font-weight: 700; letter-spacing: -0.04em; line-height: 0.96; }
+.h-lg  { font-size: clamp(30px,3.5vw,50px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.06; }
+.h-md  { font-size: clamp(20px,2vw,28px); font-weight: 700; letter-spacing: -0.02em; }
+.body  { font-size: 15px; font-weight: 400; line-height: 1.78; }
+.body-sm { font-size: 13px; font-weight: 400; line-height: 1.7; }
+.label { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+
+.t-dark  { color: var(--text-dark); }
+.t-mid   { color: var(--text-mid); }
+.t-soft  { color: var(--text-soft); }
+.t-white { color: #fff; }
+.t-wdim  { color: rgba(255,255,255,0.65); }
+.t-wdimmer { color: rgba(255,255,255,0.38); }
+.t-blue  { color: var(--primary); }
+.t-sky   { color: var(--secondary); }
+.t-orange { color: var(--accent); }
+
+/* ── CARDS ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.28s var(--ease), box-shadow 0.28s, border-color 0.28s;
+}
+.card:hover { box-shadow: var(--shadow-lg); border-color: var(--border); }
+
+.card-dark {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  transition: transform 0.28s var(--ease), box-shadow 0.28s, background 0.28s;
+}
+.card-dark:hover { background: rgba(255,255,255,0.13); box-shadow: 0 16px 48px rgba(0,0,0,0.3); border-color: rgba(58,110,165,0.3); }
+
+/* ── ICON WRAP ── */
+.iw {
+  width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.25s var(--ease);
+}
+.iw svg { width: 22px; height: 22px; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.iw-light { background: rgba(0,78,152,0.09); border: 1.5px solid rgba(0,78,152,0.18); }
+.iw-light svg { stroke: var(--primary); }
+.iw-dark  { background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.2); }
+.iw-dark  svg { stroke: #fff; }
+
+/* ── LOGO PILLS ── */
+.lpill {
+  height: 36px; padding: 0 14px; border-radius: 10px;
+  display: inline-flex; align-items: center; justify-content: center;
+  overflow: hidden; transition: all 0.25s var(--ease);
+}
+.lpill-light { background: var(--surface-2); border: 1px solid var(--border-soft); }
+.lpill-light:hover { border-color: var(--primary); box-shadow: var(--shadow-md); transform: scale(1.06) translateY(-2px); }
+.lpill img { height: 22px; width: auto; max-width: 100px; object-fit: contain; }
+.lpill-text { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; color: var(--text-soft); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp  { from{opacity:0;transform:translateY(26px);}to{opacity:1;transform:none;} }
+@keyframes fadeIn  { from{opacity:0;}to{opacity:1;} }
+@keyframes slideR  { from{opacity:0;transform:translateX(-22px);}to{opacity:1;transform:none;} }
+
+.slide.active .a1 { animation: fadeUp 0.65s var(--ease) 0.05s both; }
+.slide.active .a2 { animation: fadeUp 0.65s var(--ease) 0.12s both; }
+.slide.active .a3 { animation: fadeUp 0.65s var(--ease) 0.19s both; }
+.slide.active .a4 { animation: fadeUp 0.65s var(--ease) 0.26s both; }
+.slide.active .a5 { animation: fadeUp 0.65s var(--ease) 0.33s both; }
+.slide.active .af { animation: fadeIn 0.7s var(--ease) 0.08s both; }
+
+.sg > * { opacity:0; transform:translateY(20px); }
+.slide.active .sg>*:nth-child(1)  { animation:fadeUp .55s var(--ease) .07s  both; }
+.slide.active .sg>*:nth-child(2)  { animation:fadeUp .55s var(--ease) .13s  both; }
+.slide.active .sg>*:nth-child(3)  { animation:fadeUp .55s var(--ease) .19s  both; }
+.slide.active .sg>*:nth-child(4)  { animation:fadeUp .55s var(--ease) .25s  both; }
+.slide.active .sg>*:nth-child(5)  { animation:fadeUp .55s var(--ease) .31s  both; }
+.slide.active .sg>*:nth-child(6)  { animation:fadeUp .55s var(--ease) .37s  both; }
+.slide.active .sg>*:nth-child(7)  { animation:fadeUp .55s var(--ease) .43s  both; }
+.slide.active .sg>*:nth-child(8)  { animation:fadeUp .55s var(--ease) .49s  both; }
+.slide.active .sg>*:nth-child(9)  { animation:fadeUp .55s var(--ease) .55s  both; }
+.slide.active .sg>*:nth-child(10) { animation:fadeUp .55s var(--ease) .61s  both; }
+.slide.active .sg>*:nth-child(n+11){ animation:fadeUp .55s var(--ease) .67s both; }
+
+/* ── DIVIDER BAR ── */
+.dbar { width: 44px; height: 3px; border-radius: 3px; background: linear-gradient(90deg,var(--primary),var(--secondary)); margin-bottom: 14px; }
+
+/* ================================================================
+   SLIDE 1 — COVER
+   Vivid blue gradient + large animated blob orbs
+   ================================================================ */
+#slide-1 {
+  background: linear-gradient(135deg, #002f6c 0%, #004e98 40%, #0060c0 70%, #1a76d2 100%);
+  overflow: hidden;
+  padding: 0;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Large animated blobs – mimic d·local */
+.cover-blob {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  will-change: transform;
+}
+/* Top-left dark blob */
+.cover-blob-1 {
+  width: 72vw; height: 72vw;
+  top: -36vw; left: -22vw;
+  background: radial-gradient(circle at 60% 60%, #002060 0%, #003380 55%, transparent 80%);
+  animation: blob-drift1 14s ease-in-out infinite;
+  opacity: 0.9;
+}
+/* Bottom-right lighter blob */
+.cover-blob-2 {
+  width: 55vw; height: 55vw;
+  bottom: -22vw; right: -14vw;
+  background: radial-gradient(circle at 40% 40%, #0055b0 0%, #0070d0 50%, transparent 75%);
+  animation: blob-drift2 18s ease-in-out infinite;
+  opacity: 0.85;
+}
+/* Top-right accent blob */
+.cover-blob-3 {
+  width: 38vw; height: 38vw;
+  top: -12vw; right: -8vw;
+  background: radial-gradient(circle at 50% 50%, #1a8ad4 0%, transparent 70%);
+  animation: blob-drift3 11s ease-in-out infinite;
+  opacity: 0.6;
+}
+@keyframes blob-drift1 {
+  0%,100% { transform: translate(0,0) scale(1); }
+  33%     { transform: translate(2vw, 2vw) scale(1.03); }
+  66%     { transform: translate(-1vw, 1vw) scale(0.98); }
+}
+@keyframes blob-drift2 {
+  0%,100% { transform: translate(0,0) scale(1); }
+  50%     { transform: translate(-2vw,-2vw) scale(1.05); }
+}
+@keyframes blob-drift3 {
+  0%,100% { transform: translate(0,0) scale(1); }
+  40%     { transform: translate(1vw, 2vw) scale(1.08); }
+  80%     { transform: translate(-1vw, -1vw) scale(0.95); }
+}
+
+/* Logo top-left */
+.cover-logo-topleft {
+  position: absolute; bottom: 40px; left: 64px; z-index: 10;
+}
+.cover-logo-topleft img {
+  height: 64px; width: auto; object-fit: contain;
+  filter: brightness(0) invert(1) opacity(0.92);
+  transition: opacity 0.3s;
+}
+.cover-logo-topleft img:hover { opacity: 1; }
+
+/* Center content — centered text, vertically centered */
+.cover-content {
+  position: relative; z-index: 10;
+  width: 100%; max-width: 900px;
+  padding: 0 64px;
+  display: flex; flex-direction: column; gap: 12px;
+  align-self: center;
+  align-items: center;
+  text-align: center;
+}
+
+.cover-underline {
+  height: 3px; border-radius: 3px; width: 0;
+  background: rgba(255,255,255,0.3);
+  animation: exp-line 1s var(--ease) 1s both;
+  margin-bottom: 4px;
+}
+@keyframes exp-line { to { width: 100px; } }
+@keyframes logo-breathe { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-5px);} }
+
+.cover-badges { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+
+.cover-url {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.38);
+  letter-spacing: 0.08em; text-decoration: none; transition: color 0.2s;
+  margin-top: 2px;
+}
+.cover-url:hover { color: rgba(255,255,255,0.75); }
+
+/* ================================================================
+   PARTNERS MARQUEE
+   ================================================================ */
+.marquee-outer {
+  width: 100%; overflow: hidden; position: relative;
+}
+.marquee-outer::before, .marquee-outer::after {
+  content: ''; position: absolute; top: 0; bottom: 0;
+  width: 160px; z-index: 2; pointer-events: none;
+}
+.marquee-outer::before {
+  left: 0;
+  background: linear-gradient(
+    90deg,
+    var(--primary)        0%,
+    var(--primary)        10%,
+    rgba(0,78,152,0.85)  30%,
+    rgba(0,78,152,0.5)   55%,
+    rgba(0,78,152,0.15)  80%,
+    transparent          100%
+  );
+}
+.marquee-outer::after {
+  right: 0;
+  background: linear-gradient(
+    -90deg,
+    var(--primary)        0%,
+    var(--primary)        10%,
+    rgba(0,78,152,0.85)  30%,
+    rgba(0,78,152,0.5)   55%,
+    rgba(0,78,152,0.15)  80%,
+    transparent          100%
+  );
+}
+
+.marquee-track {
+  display: flex; gap: 14px; width: max-content;
+  animation: marquee-scroll 30s linear infinite;
+}
+.marquee-track:hover { animation-play-state: paused; }
+@keyframes marquee-scroll { from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+.partner-logo-card {
+  height: 72px; min-width: 140px; border-radius: 12px; flex-shrink: 0;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+  display: flex; align-items: center; justify-content: center; padding: 10px 18px;
+  transition: background 0.28s, border-color 0.28s; cursor: default;
+}
+.partner-logo-card:hover { background: rgba(255,255,255,0.14); border-color: rgba(58,110,165,0.35); }
+.partner-logo-card img { height: 36px; width: auto; max-width: 110px; object-fit: contain; filter: brightness(0) invert(1) opacity(0.65); transition: filter 0.32s; }
+.partner-logo-card:hover img { filter: brightness(1) invert(0) saturate(1.1) opacity(1); }
+.partner-logo-card .pname { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.65); letter-spacing: 0.03em; }
+.partner-logo-card:hover .pname { color: #fff; }
+
+/* ================================================================
+   CERTIFICATIONS
+   ================================================================ */
+.cert-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:16px; width:100%; }
+.cert-card {
+  border-radius: 16px; padding: 24px 18px;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  background: var(--surface); border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s, border-color 0.3s;
+  cursor: default;
+}
+.cert-card:hover { box-shadow: var(--shadow-lg); border-color: var(--border); }
+.cert-img-wrap {
+  width: 100%; height: 70px; display: flex; align-items: center; justify-content: center;
+}
+.cert-img-wrap img {
+  max-width: 110px; max-height: 64px; object-fit: contain;
+  filter: brightness(0) saturate(0) invert(20%) sepia(68%) saturate(3000%) hue-rotate(195deg) brightness(78%);
+  transition: filter 0.35s var(--ease);
+}
+.cert-card:hover .cert-img-wrap img { filter: none; }
+.cert-name { font-size: 12px; font-weight: 600; color: var(--text-mid); text-align: center; line-height: 1.4; }
+.cert-card:hover .cert-name { color: var(--primary); }
+
+/* ================================================================
+   DONUT
+   ================================================================ */
+.legend-row { display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.08); }
+.legend-dot  { width:9px;height:9px;border-radius:50%;flex-shrink:0; }
+.legend-name { font-size:14px;color:rgba(255,255,255,0.65);display:flex;align-items:center;gap:10px;flex:1; }
+.legend-pct  { font-size:14px;font-weight:800;color:#fff; }
+
+/* ================================================================
+   SETTINGS PANEL
+   ================================================================ */
+#settings-btn {
+  position:fixed;top:20px;left:20px;z-index:1500;
+  width:38px;height:38px;border-radius:50%;
+  background:var(--surface);border:1px solid var(--border-soft);
+  box-shadow:var(--shadow-sm);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-soft);transition:all 0.22s;
+}
+#settings-btn:hover { color:var(--primary);border-color:var(--border);box-shadow:var(--shadow-md); }
+#settings-btn.hidden { opacity:0;pointer-events:none; }
+
+#settings-panel {
+  position:fixed;top:66px;left:20px;z-index:1501;
+  width:252px;padding:22px;
+  background:var(--surface);border:1px solid var(--border-soft);
+  border-radius:18px;box-shadow:var(--shadow-xl);
+  transform:translateY(-10px) scale(0.96);opacity:0;pointer-events:none;
+  transition:all 0.25s var(--ease);
+}
+#settings-panel.open { transform:none;opacity:1;pointer-events:all; }
+.sg-lbl { font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-soft);margin-bottom:9px;display:block; }
+.sg-row { margin-bottom:18px; }
+.sg-row:last-child { margin-bottom:0; }
+.opts { display:flex;gap:6px;flex-wrap:wrap; }
+.ob {
+  font-size:12px;font-weight:600;padding:6px 14px;
+  border-radius:9px;border:1px solid var(--border-soft);
+  background:var(--surface-2);color:var(--text-mid);cursor:pointer;
+  transition:all 0.18s;font-family:var(--font);
+}
+.ob:hover,.ob.active { background:var(--primary);color:#fff;border-color:var(--primary); }
+.lang-sel {
+  width:100%;padding:9px 32px 9px 12px;border-radius:10px;
+  background:var(--surface-2);border:1px solid var(--border-soft);
+  color:var(--text-dark);font-family:var(--font);font-size:13px;font-weight:500;
+  cursor:pointer;outline:none;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237890aa' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;
+  transition:border-color 0.2s;
+}
+.lang-sel:focus { border-color:var(--primary); }
+
+/* ================================================================
+   NAVIGATION
+   ================================================================ */
+#nav-dots {
+  position:fixed;right:18px;top:50%;transform:translateY(-50%);
+  z-index:1000;display:flex;flex-direction:column;gap:9px;
+}
+.dot { width:6px;height:6px;border-radius:50%;background:var(--text-soft);cursor:pointer;transition:all 0.28s var(--ease); }
+.dot.active { background:var(--primary);transform:scale(2); }
+.dot:hover:not(.active) { transform:scale(1.5); }
+/* Dark-slide overrides — active dot becomes platinum */
+body.dark-bg .dot { background:rgba(255,255,255,0.3); }
+body.dark-bg .dot.active { background:var(--platinum); }
+body.dark-bg .dot:hover:not(.active) { background:rgba(255,255,255,0.5); }
+
+#arrows {
+  position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+  z-index:1000;display:flex;align-items:center;gap:10px;
+}
+.arr-btn {
+  width:40px;height:40px;border-radius:50%;
+  background:var(--surface);border:1px solid var(--border-soft);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:var(--text-mid);transition:all 0.22s;box-shadow:var(--shadow-sm);
+}
+.arr-btn:hover { background:var(--primary);color:#fff;border-color:var(--primary);transform:scale(1.08); }
+#slide-counter { font-size:12px;font-weight:600;color:var(--text-soft);min-width:44px;text-align:center; }
+
+/* ── SLIDE 2 LOGO PILLS ── */
+.s2-logo-pill {
+  height: 44px; min-width: 90px; max-width: 160px; padding: 6px 12px;
+  border-radius: 10px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+  display: inline-flex; align-items: center; justify-content: center;
+  overflow: hidden; transition: background 0.25s, border-color 0.25s; cursor: default; flex-shrink: 0;
+}
+.s2-logo-pill:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.3); }
+.s2-logo-img {
+  max-height: 28px; max-width: 120px; width: auto; object-fit: contain;
+  filter: grayscale(1) brightness(0) invert(1) opacity(0.65);
+  transition: filter 0.3s var(--ease); display: block;
+}
+.s2-logo-pill:hover .s2-logo-img { filter: grayscale(0) brightness(1) saturate(1.1) opacity(1); }
+.s2-fb {
+  display: none; font-size: 10px; font-weight: 700;
+  color: rgba(255,255,255,0.55); letter-spacing: 0.05em; text-transform: uppercase;
+}
+
+/* ================================================================
+   VERTICAL SETUP SLIDE (slide 6)
+   ================================================================ */
+.vs-card {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+  animation: fadeUp 0.65s var(--ease) both;
+}
+.vs-img-wrap {
+  width: 100%; aspect-ratio: 3/4; border-radius: 16px; overflow: hidden;
+  position: relative; background: var(--surface-2);
+  border: 1px solid var(--border-soft); box-shadow: var(--shadow-md);
+}
+.vs-img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.55s var(--ease);
+  display: block;
+}
+.vs-img-fallback {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600; color: var(--text-soft); letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.vs-step-badge {
+  position: absolute; top: 12px; left: 12px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--primary); color: #fff;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.04em;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 10px rgba(0,78,152,0.35);
+}
+.vs-label {
+  font-size: 14px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+  margin-top: 2px;
+}
+.vs-desc {
+  font-size: 12px; font-weight: 400; color: var(--text-soft); line-height: 1.55;
+}
+.vs-arrow {
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 8px; padding-bottom: 80px; /* offset to align with image center */
+  flex-shrink: 0; opacity: 0.5;
+}
+
+/* Stagger animation for vs-cards */
+.slide.active .vs-card:nth-child(1) { animation-delay: 0.1s; }
+.slide.active .vs-card:nth-child(3) { animation-delay: 0.25s; }
+.slide.active .vs-card:nth-child(5) { animation-delay: 0.4s; }
+.slide.active .vs-card:nth-child(7) { animation-delay: 0.55s; }
+.slide.active .vs-arrow { animation: fadeIn 0.5s var(--ease) 0.3s both; }
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media(max-width:960px){
+  .slide{padding:44px 28px 72px;}
+  .cert-grid{grid-template-columns:repeat(3,1fr)!important;}
+  .r2{grid-template-columns:1fr!important;}
+  .r3{grid-template-columns:1fr 1fr!important;}
+  .r4{grid-template-columns:1fr 1fr!important;}
+  .r5{grid-template-columns:repeat(3,1fr)!important;}
+}
+
+</style>
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<div id="progress-bar"></div>
+
+<!-- Settings (slide 1 only) -->
+<button id="settings-btn" title="Settings">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="3"/>
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+  </svg>
+</button>
+<div id="settings-panel">
+  <div class="sg-row">
+    <span class="sg-lbl" data-k="autoplay">Auto-play</span>
+    <div class="opts">
+      <button class="ob active" onclick="setAP(0,this)">Off</button>
+      <button class="ob" onclick="setAP(10000,this)">10s</button>
+      <button class="ob" onclick="setAP(20000,this)">20s</button>
+      <button class="ob" onclick="setAP(30000,this)">30s</button>
+    </div>
+  </div>
+  <div class="sg-row">
+    <span class="sg-lbl" data-k="language">Language</span>
+    <select class="lang-sel" id="lang-sel" onchange="setLang(this.value)">
+      <option value="en">🇬🇧 English</option>
+      <option value="es">🇪🇸 Español</option>
+      <option value="it">🇮🇹 Italiano</option>
+      <option value="fr">🇫🇷 Français</option>
+      <option value="de">🇩🇪 Deutsch</option>
+      <option value="da">🇩🇰 Dansk</option>
+      <option value="zh">🇨🇳 中文</option>
+      <option value="ar">🇸🇦 العربية</option>
+      <option value="ru">🇷🇺 Русский</option>
+      <option value="tr">🇹🇷 Türkçe</option>
+    </select>
+  </div>
+</div>
+
+<!-- Nav dots -->
+<nav id="nav-dots"></nav>
+<div id="arrows">
+  <button class="arr-btn" id="btn-prev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <span id="slide-counter">1 / 13</span>
+  <button class="arr-btn" id="btn-next"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></button>
+</div>
+
+<!-- ================================================================
+     DECK
+     ================================================================ -->
+<div id="deck">
+
+<!-- ═══ SLIDE 1 — COVER ═══ -->
+<section class="slide slide-dark active" id="slide-1">
+  <!-- Animated blob layers -->
+  <div class="cover-blob cover-blob-1"></div>
+  <div class="cover-blob cover-blob-2"></div>
+  <div class="cover-blob cover-blob-3"></div>
+
+  <span class="slide-num" style="color:rgba(255,255,255,0.25);">01 / 13</span>
+
+  <!-- Logo — top left -->
+  <div class="cover-logo-topleft a1">
+    <img id="sdl-logo"
+      src="https://i.postimg.cc/LsTBkWfD/SDL-Logo-2.png"
+      alt="Square Denims"
+      onerror="this.style.display='none';document.getElementById('sdl-fallback').style.display='block'">
+    <div id="sdl-fallback" style="display:none;font-size:16px;font-weight:700;color:#fff;letter-spacing:0.05em;text-transform:uppercase;">Square Denims</div>
+  </div>
+
+  <!-- Centred content -->
+  <div class="cover-content">
+
+    <!-- L1: Square Denims — smaller label -->
+    <div class="a2" style="
+      font-size: clamp(14px, 1.6vw, 22px);
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      line-height: 1;
+    " data-k="cover_l1">Square Denims</div>
+
+    <!-- L2: Business Profile — maximum size -->
+    <div class="a3" style="
+      font-size: clamp(46px, 7.5vw, 108px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+      color: #ffffff;
+      line-height: 0.92;
+      margin-top: 2px;
+    " data-k="biz_profile">Business Profile</div>
+
+    <!-- Divider line -->
+    <div class="cover-underline a4"></div>
+
+    <!-- Tagline — under Business Profile -->
+    <div class="a4" style="
+      font-size: clamp(12px, 1.1vw, 15px);
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-top: -2px;
+    " data-k="tagline">Engineered for Global Standards</div>
+
+    <!-- Badge + URL -->
+    <div class="cover-badges a5">
+      <div class="tag" data-k="est_tag" style="color:rgba(255,255,255,0.65);background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);text-transform:none;letter-spacing:0.04em;">
+        Est. 2015 · Habiganj, Bangladesh
+      </div>
+    </div>
+    <a href="https://www.squaredenims.com" class="cover-url a5" target="_blank" data-k="sdl_url">www.squaredenims.com</a>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 2 — STORY (DARK) ═══ -->
+<section class="slide slide-dark" id="slide-2" style="padding:52px 64px 72px;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 80% 10%,rgba(58,110,165,0.1) 0%,transparent 70%);pointer-events:none;"></div>
+  <span class="slide-num">02 / 13</span>
+
+  <div style="width:100%;max-width:1220px;display:grid;grid-template-columns:320px 1fr;gap:48px;align-items:start;position:relative;z-index:2;">
+
+    <!-- LEFT: text -->
+    <div>
+      <div class="a1" style="margin-bottom:14px;"><div class="tag tag-dark" data-k="our_heritage">Our Heritage</div></div>
+      <div class="dbar a2"></div>
+      <h2 class="h-lg a2 t-white" style="font-weight:700;font-size:clamp(22px,2.6vw,36px);margin-bottom:14px;" data-k="story_title">
+        The Story of <span style="font-weight:700;color:#fff;">Square</span>
+      </h2>
+      <p style="font-size:13px;font-weight:400;line-height:1.75;color:rgba(255,255,255,0.58);" class="a3" data-k="story_body">
+        SQUARE today symbolizes a name — a state of mind. Since the inception in 1958, it has today burgeoned into one of the most successful conglomerates in Bangladesh. The group started business in 1958 with a pharmaceutical venture. Over the next six decades it has become a pioneer in diversified fields of business.
+      </p>
+    </div>
+
+    <!-- RIGHT: 5 sector rows -->
+    <div style="display:flex;flex-direction:column;gap:10px;" class="sg">
+
+      <!-- Healthcare -->
+      <div class="card-dark" style="padding:14px 20px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:12px;" data-k="s_healthcare">Healthcare</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <div class="s2-logo-pill">
+            <img src="https://i.postimg.cc/136W8vYC/sauare-pharma-logo.png" alt="Square Pharma" class="s2-logo-img" onerror="this.style.display='none';this.parentNode.querySelector('.s2-fb').style.display='flex'">
+            <span class="s2-fb">Sq. Pharma</span>
+          </div>
+          <div class="s2-logo-pill">
+            <img src="https://i.postimg.cc/d1DyddXQ/Hospital.png" alt="Square Hospital" class="s2-logo-img" onerror="this.style.display='none';this.parentNode.querySelector('.s2-fb').style.display='flex'">
+            <span class="s2-fb">Sq. Hospital</span>
+          </div>
+          <div class="s2-logo-pill">
+            <img src="https://i.postimg.cc/263ZvvJR/Harbal.png" alt="Square Herbal" class="s2-logo-img" onerror="this.style.display='none';this.parentNode.querySelector('.s2-fb').style.display='flex'">
+            <span class="s2-fb">Sq. Herbal</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Textile -->
+      <div class="card-dark" style="padding:14px 20px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:12px;" data-k="s_textile">Textile</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <div class="s2-logo-pill">
+            <img src="https://i.postimg.cc/pX0Y9Wy1/Textiles.png" alt="Square Textiles" class="s2-logo-img" onerror="this.style.display='none';this.parentNode.querySelector('.s2-fb').style.display='flex'">
+            <span class="s2-fb">Sq. Textiles</span>
+          </div>
+          <div class="s2-logo-pill">
+            <img src="https://i.postimg.cc/9M8FdnTf/Fasions.png" alt="Square Fashions" class="s2-logo-img" onerror="this.style.display='none';this.parentNode.querySelector('.s2-fb').style.display='flex'">
+            <span class="s2-fb">Sq. Fashions</span>
+          </div>
+          <div class="s2-logo-pill">
+            <img src="https://i.postimg.cc/CLvHZhdX/Denim.png" alt="Square Denims" class="s2-logo-img" onerror="this.style.display='none';this.parentNode.querySelector('.s2-fb').style.display='flex'">
+            <span class="s2-fb">Sq. Denims</span>
+          </div>
+          <div class="s2-logo-pill">
+            <img src="https://i.postimg.cc/bN6HGydM/Apparel.png" alt="Square Apparels" class="s2-logo-img" onerror="this.style.display='none';this.parentNode.querySelector('.s2-fb').style.display='flex'">
+            <span class="s2-fb">Sq. Apparels</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Consumer & Food -->
+      <div class="card-dark" style="padding:14px 20px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:12px;" data-k="s_consumer">Consumer &amp; Food</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <div class="s2-logo-pill">
+            <img src="https://i.postimg.cc/xC7bP8DX/SQ-Food.png" alt="Square Food" class="s2-logo-img" onerror="this.style.display='none';this.parentNode.querySelector('.s2-fb').style.display='flex'">
+            <span class="s2-fb">Sq. Food</span>
+          </div>
+          <div class="s2-logo-pill">
+            <img src="https://i.postimg.cc/N0dX5bdx/square-toiletries.png" alt="Square Toiletries" class="s2-logo-img" onerror="this.style.display='none';this.parentNode.querySelector('.s2-fb').style.display='flex'">
+            <span class="s2-fb">Sq. Toiletries</span>
+          </div>
+          <div class="s2-logo-pill">
+            <img src="https://i.postimg.cc/zfzWz4Fx/TEa.png" alt="Square Tea" class="s2-logo-img" onerror="this.style.display='none';this.parentNode.querySelector('.s2-fb').style.display='flex'">
+            <span class="s2-fb">Sq. Tea</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Media & Communication -->
+      <div class="card-dark" style="padding:14px 20px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:12px;" data-k="s_media">Media &amp; Communication</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <div class="s2-logo-pill">
+            <img src="https://i.postimg.cc/DzDXr6XR/Maasranga-Television-Logo.png" alt="Maasranga TV" class="s2-logo-img" onerror="this.style.display='none';this.parentNode.querySelector('.s2-fb').style.display='flex'">
+            <span class="s2-fb">Maasranga</span>
+          </div>
+          <div class="s2-logo-pill">
+            <img src="https://i.postimg.cc/8zWy7Znw/mediacom-logo.png" alt="Mediacom" class="s2-logo-img" onerror="this.style.display='none';this.parentNode.querySelector('.s2-fb').style.display='flex'">
+            <span class="s2-fb">Mediacom</span>
+          </div>
+          <div class="s2-logo-pill">
+            <img src="https://i.postimg.cc/G29yYYNp/Info-Logo.png" alt="Infocom" class="s2-logo-img" onerror="this.style.display='none';this.parentNode.querySelector('.s2-fb').style.display='flex'">
+            <span class="s2-fb">Infocom</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aviation & Service -->
+      <div class="card-dark" style="padding:14px 20px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:12px;" data-k="s_aviation">Aviation &amp; Service</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <div class="s2-logo-pill">
+            <img src="https://i.postimg.cc/1zvFfMvk/ageis-logo.png" alt="Aegis" class="s2-logo-img" onerror="this.style.display='none';this.parentNode.querySelector('.s2-fb').style.display='flex'">
+            <span class="s2-fb">Aegis</span>
+          </div>
+          <div class="s2-logo-pill">
+            <img src="https://i.postimg.cc/tgB6YDBd/Air.png" alt="Air" class="s2-logo-img" onerror="this.style.display='none';this.parentNode.querySelector('.s2-fb').style.display='flex'">
+            <span class="s2-fb">Air Services</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 3 — GROUP TURNOVER (LIGHT) ═══ -->
+<section class="slide slide-light" id="slide-3">
+  <span class="slide-num">03 / 13</span>
+  <div class="slide-inner">
+    <div class="a1"><div class="tag tag-light" data-k="fin_overview">Financial Overview</div></div>
+    <h2 class="h-lg a2 t-dark" style="margin:10px 0 20px;" data-k="fin_title">Group Turnover &amp; <span style="color:var(--primary-dark);font-weight:700;">Market Presence</span></h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:20px;align-items:stretch;">
+
+      <!-- LEFT: 2×2 KPI grid, equal height -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:14px;" class="sg">
+
+        <div class="card" style="padding:28px 24px;display:flex;flex-direction:column;justify-content:space-between;min-height:138px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#6b8aaa;line-height:1.4;" data-k="group_turnover">Group Turnover 2023–24</div>
+          <div style="font-size:30px;font-weight:700;letter-spacing:-0.03em;color:#0a1628;line-height:1;">
+            <span style="font-size:17px;font-weight:700;">USD </span><span style="color:#004e98;">2B+</span>
+          </div>
+        </div>
+
+        <div class="card" style="padding:28px 24px;display:flex;flex-direction:column;justify-content:space-between;min-height:138px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#6b8aaa;" data-k="companies">Companies</div>
+          <div style="font-size:40px;font-weight:700;letter-spacing:-0.04em;color:#0a1628;line-height:1;">27</div>
+        </div>
+
+        <div class="card" style="padding:28px 24px;display:flex;flex-direction:column;justify-content:space-between;min-height:138px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#6b8aaa;" data-k="market_cap">Market Cap</div>
+          <div style="font-size:30px;font-weight:700;letter-spacing:-0.03em;color:#0a1628;line-height:1;">
+            <span style="font-size:17px;font-weight:700;">USD </span><span style="color:#004e98;">3B</span>
+          </div>
+        </div>
+
+        <div class="card" style="padding:28px 24px;display:flex;flex-direction:column;justify-content:space-between;min-height:138px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#6b8aaa;" data-k="listed">Stock Listed</div>
+          <div>
+            <div style="font-size:40px;font-weight:700;letter-spacing:-0.04em;color:#0a1628;line-height:1;">2</div>
+            <div style="font-size:12px;font-weight:400;color:#6b8aaa;margin-top:5px;" data-k="listed_sub">Pharma &amp; Textiles</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Donut chart card -->
+      <div class="card a3" style="padding:32px 40px;display:flex;align-items:center;justify-content:center;gap:44px;" id="donut-card">
+
+        <!-- SVG donut — rotated -90deg so starts at 12 o'clock -->
+        <div style="flex-shrink:0;width:210px;height:210px;position:relative;">
+          <svg id="donut-svg" viewBox="0 0 210 210" width="210" height="210"
+               style="display:block;transform:rotate(-90deg);transform-origin:50% 50%;">
+            <!-- grey track -->
+            <circle cx="105" cy="105" r="76" fill="none" stroke="#ebebeb" stroke-width="30"/>
+            <!-- Healthcare 43% — deep blue #004e98 -->
+            <circle id="dc-0" cx="105" cy="105" r="76" fill="none"
+              stroke="#004e98" stroke-width="30" stroke-linecap="butt"
+              stroke-dasharray="0 477.5" stroke-dashoffset="0"
+              style="transition:stroke-dasharray 1.2s cubic-bezier(0.22,1,0.36,1) 0.15s;"/>
+            <!-- Textiles 33% — orange #ff6700 -->
+            <circle id="dc-1" cx="105" cy="105" r="76" fill="none"
+              stroke="#ff6700" stroke-width="30" stroke-linecap="butt"
+              stroke-dasharray="0 477.5" stroke-dashoffset="0"
+              style="transition:stroke-dasharray 1.2s cubic-bezier(0.22,1,0.36,1) 0.3s;"/>
+            <!-- FMCG 20% — cornflower #3a6ea5 -->
+            <circle id="dc-2" cx="105" cy="105" r="76" fill="none"
+              stroke="#3a6ea5" stroke-width="30" stroke-linecap="butt"
+              stroke-dasharray="0 477.5" stroke-dashoffset="0"
+              style="transition:stroke-dasharray 1.2s cubic-bezier(0.22,1,0.36,1) 0.45s;"/>
+            <!-- Others 4% — light platinum-blue -->
+            <circle id="dc-3" cx="105" cy="105" r="76" fill="none"
+              stroke="#c5d5e8" stroke-width="30" stroke-linecap="butt"
+              stroke-dasharray="0 477.5" stroke-dashoffset="0"
+              style="transition:stroke-dasharray 1.2s cubic-bezier(0.22,1,0.36,1) 0.6s;"/>
+          </svg>
+          <!-- Centre text (un-rotated overlay) -->
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;">
+            <div style="font-size:17px;font-weight:700;color:#0a1628;letter-spacing:-0.03em;line-height:1;text-align:center;">USD 2B+</div>
+            <div style="font-size:8px;font-weight:700;color:#6b8aaa;letter-spacing:0.14em;text-transform:uppercase;margin-top:5px;text-align:center;" data-k="donut_lbl">GROUP TURNOVER</div>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div style="display:flex;flex-direction:column;min-width:190px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;border-bottom:1px solid #ebebeb;">
+            <span style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;color:#2e4a6a;">
+              <span style="width:11px;height:11px;border-radius:50%;background:#004e98;flex-shrink:0;display:inline-block;"></span><span data-k="l_healthcare">Healthcare</span>
+            </span>
+            <span style="font-size:15px;font-weight:700;color:#0a1628;flex-shrink:0;">43%</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;border-bottom:1px solid #ebebeb;">
+            <span style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;color:#2e4a6a;">
+              <span style="width:11px;height:11px;border-radius:50%;background:#ff6700;flex-shrink:0;display:inline-block;"></span><span data-k="l_textiles">Textiles</span>
+            </span>
+            <span style="font-size:15px;font-weight:700;color:#0a1628;flex-shrink:0;">33%</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;border-bottom:1px solid #ebebeb;">
+            <span style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;color:#2e4a6a;">
+              <span style="width:11px;height:11px;border-radius:50%;background:#3a6ea5;flex-shrink:0;display:inline-block;"></span><span data-k="l_fmcg">FMCG</span>
+            </span>
+            <span style="font-size:15px;font-weight:700;color:#0a1628;flex-shrink:0;">20%</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;">
+            <span style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;color:#2e4a6a;">
+              <span style="width:11px;height:11px;border-radius:50%;background:#c5d5e8;flex-shrink:0;display:inline-block;"></span><span data-k="l_others">Others</span>
+            </span>
+            <span style="font-size:15px;font-weight:700;color:#0a1628;flex-shrink:0;">4%</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 4 — TEXTILE DIVISION (DARK) ═══ -->
+<section class="slide slide-dark" id="slide-4">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 20% 80%,rgba(58,110,165,0.1) 0%,transparent 70%);pointer-events:none;"></div>
+  <span class="slide-num">04 / 13</span>
+  <div class="slide-inner" style="position:relative;z-index:2;">
+    <div class="a1"><div class="tag tag-dark" data-k="textile_tag">Textile Division</div></div>
+    <!-- "Textile" word in deep blue (primary-dark) -->
+    <h2 class="h-lg a2 t-white" style="margin:12px 0 10px;" data-k="textile_title">Square <span style="color:#fff;">Textile</span> <span style="font-weight:700;color:#fff;">Division</span></h2>
+    <p class="body a3 t-wdim" style="max-width:860px;margin-bottom:24px;" data-k="text_body">Securing 33% of the group's turnover, built on commitment to quality production and continuous diversification. Square entered textiles in 1997 with spinning — today spanning six world-class entities.</p>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;" class="r4 sg">
+
+      <!-- Square Textiles -->
+      <div class="card-dark" style="padding:0 0 32px;overflow:hidden;border-radius:16px;">
+        <div style="width:100%;height:100px;display:flex;align-items:center;justify-content:flex-start;padding:0 26px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:22px;">
+          <img src="https://i.postimg.cc/pX0Y9Wy1/Textiles.png" alt="Square Textiles"
+            style="max-height:68px;max-width:180px;width:100%;object-fit:contain;filter:brightness(0) invert(1);transition:opacity 0.3s;"
+            onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"
+            onerror="this.style.display='none';this.parentNode.innerHTML='<span style=font-size:13px;font-weight:700;color:#fff;letter-spacing:0.08em;text-transform:uppercase>SQ TEXTILES</span>'">
+        </div>
+        <div style="padding:0 26px;">
+          <div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:10px;line-height:1.2;" data-k="tc1">Square Textiles Ltd.</div>
+          <div style="font-size:14px;font-weight:400;line-height:1.7;color:rgba(255,255,255,0.6);" data-k="tc1d">Versatile &amp; Valued yarn manufacturer.</div>
+          <div style="margin-top:18px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:6px 16px;border-radius:100px;color:#fff;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);">Est. 1997</div>
+        </div>
+      </div>
+
+      <!-- Square Fashions -->
+      <div class="card-dark" style="padding:0 0 32px;overflow:hidden;border-radius:16px;">
+        <div style="width:100%;height:100px;display:flex;align-items:center;justify-content:flex-start;padding:0 26px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:22px;">
+          <img src="https://i.postimg.cc/9M8FdnTf/Fasions.png" alt="Square Fashions"
+            style="max-height:68px;max-width:180px;width:100%;object-fit:contain;filter:brightness(0) invert(1);transition:opacity 0.3s;"
+            onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"
+            onerror="this.style.display='none';this.parentNode.innerHTML='<span style=font-size:13px;font-weight:700;color:#fff;letter-spacing:0.08em;text-transform:uppercase>SQ FASHIONS</span>'">
+        </div>
+        <div style="padding:0 26px;">
+          <div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:10px;line-height:1.2;" data-k="tc2">Square Fashions Ltd.</div>
+          <div style="font-size:14px;font-weight:400;line-height:1.7;color:rgba(255,255,255,0.6);" data-k="tc2d">Knit Fabric &amp; Garments Manufacturer.</div>
+          <div style="margin-top:18px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:6px 16px;border-radius:100px;color:#fff;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);">Est. 2001</div>
+        </div>
+      </div>
+
+      <!-- Square Denims -->
+      <div class="card-dark" style="padding:0 0 32px;overflow:hidden;border-radius:16px;">
+        <div style="width:100%;height:100px;display:flex;align-items:center;justify-content:flex-start;padding:0 26px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:22px;">
+          <img src="https://i.postimg.cc/CLvHZhdX/Denim.png" alt="Square Denims"
+            style="max-height:68px;max-width:180px;width:100%;object-fit:contain;filter:brightness(0) invert(1);transition:opacity 0.3s;"
+            onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"
+            onerror="this.style.display='none';this.parentNode.innerHTML='<span style=font-size:13px;font-weight:700;color:#fff;letter-spacing:0.08em;text-transform:uppercase>SQ DENIMS</span>'">
+        </div>
+        <div style="padding:0 26px;">
+          <div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:10px;line-height:1.2;" data-k="tc3">Square Denims Ltd.</div>
+          <div style="font-size:14px;font-weight:400;line-height:1.7;color:rgba(255,255,255,0.6);" data-k="tc3d">Denim Fabric &amp; Jeanswear Manufacturer.</div>
+          <div style="margin-top:18px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:6px 16px;border-radius:100px;color:#fff;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);">Est. 2015</div>
+        </div>
+      </div>
+
+      <!-- Square Apparels -->
+      <div class="card-dark" style="padding:0 0 32px;overflow:hidden;border-radius:16px;">
+        <div style="width:100%;height:100px;display:flex;align-items:center;justify-content:flex-start;padding:0 26px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:22px;">
+          <img src="https://i.postimg.cc/bN6HGydM/Apparel.png" alt="Square Apparels"
+            style="max-height:68px;max-width:180px;width:100%;object-fit:contain;filter:brightness(0) invert(1);transition:opacity 0.3s;"
+            onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'"
+            onerror="this.style.display='none';this.parentNode.innerHTML='<span style=font-size:13px;font-weight:700;color:#fff;letter-spacing:0.08em;text-transform:uppercase>SQ APPARELS</span>'">
+        </div>
+        <div style="padding:0 26px;">
+          <div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:10px;line-height:1.2;" data-k="tc4">Square Apparels Ltd.</div>
+          <div style="font-size:14px;font-weight:400;line-height:1.7;color:rgba(255,255,255,0.6);" data-k="tc4d">Woven &amp; non-denim Fabric &amp; Garments.</div>
+          <div style="margin-top:18px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:6px 16px;border-radius:100px;color:#fff;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);">Est. 2016</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 5 — SQUARE DENIMS INTRO (LIGHT) ═══ -->
+<section class="slide slide-light" id="slide-5">
+  <span class="slide-num">05 / 13</span>
+  <div style="width:100%;max-width:1220px;height:74vh;display:flex;flex-direction:column;gap:14px;">
+    <div class="a1"><div class="tag tag-light" data-k="sd_tag">Square Denims Limited</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;flex:1;border-radius:20px;overflow:hidden;border:1px solid var(--border-soft);box-shadow:var(--shadow-lg);" class="r2">
+      <div style="position:relative;overflow:hidden;background:var(--primary-light);">
+        <img src="https://i.postimg.cc/LsTBkWfD/SDL-Logo-2.png" alt="Factory" style="display:none;">
+        <img src="https://i.postimg.cc/rFfRhD9s/Factory.jpg" alt="Square Denims Factory" style="width:100%;height:100%;object-fit:cover;transition:transform 0.6s var(--ease);" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div style="display:none;width:100%;height:100%;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--text-soft);">
+          <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          <span style="font-size:13px;font-weight:600;letter-spacing:0.06em;" data-k="insert_factory">Insert Factory Image</span>
+        </div>
+        <div style="position:absolute;bottom:20px;left:20px;background:var(--primary);border-radius:12px;padding:12px 18px;">
+          <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:0.12em;text-transform:uppercase;" data-k="founded">Founded</div>
+          <div style="font-size:28px;font-weight:700;color:#fff;letter-spacing:-0.04em;">2015</div>
+        </div>
+      </div>
+      <div style="padding:44px 50px;background:var(--surface);display:flex;flex-direction:column;justify-content:center;gap:20px;">
+        <div class="dbar a2"></div>
+        <h2 class="h-lg a2 t-dark" data-k="sdl_h2">Square <span class="t-blue">Denims</span> Limited</h2>
+        <p class="body a3 t-mid" data-k="sd_body">Based in Habiganj, north-eastern Bangladesh, this denim factory was founded in 2015 equipped with cutting-edge machinery to produce a wide range of denim fabrics — making it one of the country's most innovative fabric manufacturers. Square Denims strives for creativity and excellence, achieving it naturally with a touch of heritage.</p>
+        <div class="a4" style="display:flex;align-items:center;gap:9px;color:var(--primary);font-size:13px;font-weight:600;letter-spacing:0.05em;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span data-k="sdl_loc">Habiganj, Bangladesh</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 6 — VERTICAL SETUP (LIGHT) ═══ -->
+<section class="slide slide-light" id="slide-6">
+  <span class="slide-num" style="color:var(--text-soft);">06 / 13</span>
+  <div class="slide-inner">
+    <div class="a1"><div class="tag tag-light" data-k="vi_tag">Vertical Integration</div></div>
+    <h2 class="h-lg a2 t-dark" style="margin:10px 0 4px;" data-k="vi_title">Vertical <span style="color:var(--primary);">Setup</span></h2>
+    <p class="body a3 t-mid" style="margin-bottom:22px;" data-k="vi_sub">From Yarn to Finished Garment under one roof</p>
+
+    <!-- 4-card grid, no arrows -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;" class="sg">
+
+      <!-- Step 1: Spinning — right arrow badge -->
+      <div class="vs-card">
+        <div class="vs-img-wrap">
+          <img src="https://i.postimg.cc/8Ppd1V7d/Spinning.jpg" alt="Spinning"
+            class="vs-img"
+            onmouseover="this.style.transform='scale(1.06)'"
+            onmouseout="this.style.transform='scale(1)'"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="vs-img-fallback" style="display:none;" data-k="vs_s1">Spinning</div>
+          <div class="vs-step-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Dyeing — right arrow badge -->
+      <div class="vs-card">
+        <div class="vs-img-wrap">
+          <img src="https://i.postimg.cc/RVS1MzWd/Dyeing.jpg" alt="Dyeing"
+            class="vs-img"
+            onmouseover="this.style.transform='scale(1.06)'"
+            onmouseout="this.style.transform='scale(1)'"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="vs-img-fallback" style="display:none;" data-k="vs_s2">Dyeing</div>
+          <div class="vs-step-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Weaving — right arrow badge -->
+      <div class="vs-card">
+        <div class="vs-img-wrap">
+          <img src="https://i.postimg.cc/ZKbPThWj/Weaving.jpg" alt="Weaving"
+            class="vs-img"
+            onmouseover="this.style.transform='scale(1.06)'"
+            onmouseout="this.style.transform='scale(1)'"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="vs-img-fallback" style="display:none;" data-k="vs_s3">Weaving</div>
+          <div class="vs-step-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Stitching — checkmark badge (orange) -->
+      <div class="vs-card">
+        <div class="vs-img-wrap">
+          <img src="https://i.postimg.cc/8Ppd1V7W/Stitching.jpg" alt="Stitching"
+            class="vs-img"
+            onmouseover="this.style.transform='scale(1.06)'"
+            onmouseout="this.style.transform='scale(1)'"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="vs-img-fallback" style="display:none;" data-k="vs_s4">Stitching</div>
+          <div class="vs-step-badge" style="background:var(--accent);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Animated process line — above labels, dots at card left edges -->
+    <div style="width:100%;position:relative;height:20px;margin-top:14px;margin-bottom:10px;" class="a5">
+      <!-- Grey track -->
+      <div style="position:absolute;top:50%;left:0;right:0;height:2px;background:var(--border-soft);border-radius:2px;transform:translateY(-50%);"></div>
+      <!-- Animated fill -->
+      <div id="vs-line-fill" style="position:absolute;top:50%;left:0;height:2px;width:0;
+           background:linear-gradient(90deg,var(--primary),var(--secondary),var(--accent));
+           border-radius:2px;transform:translateY(-50%);
+           transition:width 1.4s cubic-bezier(0.22,1,0.36,1) 0.4s;"></div>
+      <!-- Dots — left-aligned at each card's left edge accounting for gaps -->
+      <div style="position:absolute;top:50%;left:0;width:12px;height:12px;border-radius:50%;background:var(--primary);border:2px solid #fff;box-shadow:var(--shadow-sm);transform:translateY(-50%);"></div>
+      <div style="position:absolute;top:50%;left:calc(25% + 5px);width:12px;height:12px;border-radius:50%;background:var(--primary);border:2px solid #fff;box-shadow:var(--shadow-sm);transform:translateY(-50%);"></div>
+      <div style="position:absolute;top:50%;left:calc(50% + 10px);width:12px;height:12px;border-radius:50%;background:var(--secondary);border:2px solid #fff;box-shadow:var(--shadow-sm);transform:translateY(-50%);"></div>
+      <div style="position:absolute;top:50%;left:calc(75% + 15px);width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid #fff;box-shadow:var(--shadow-sm);transform:translateY(-50%);"></div>
+    </div>
+
+    <!-- Labels row below line — same gap as card grid -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
+      <div>
+        <div class="vs-label" style="color:var(--primary);" data-k="vs_s1">Spinning</div>
+        <div class="vs-desc" data-k="vs_s1d">In-house yarn production, 240 MT/day capacity</div>
+      </div>
+      <div>
+        <div class="vs-label" style="color:var(--primary);" data-k="vs_s2">Dyeing</div>
+        <div class="vs-desc" data-k="vs_s2d">Rope &amp; slasher dyeing, 2 Morrison sets</div>
+      </div>
+      <div>
+        <div class="vs-label" style="color:var(--primary);" data-k="vs_s3">Weaving</div>
+        <div class="vs-desc" data-k="vs_s3d">324 looms — airjet &amp; rapier technology</div>
+      </div>
+      <div>
+        <div class="vs-label" style="color:var(--accent);" data-k="vs_s4">Stitching</div>
+        <div class="vs-desc" data-k="vs_s4d">Finished garment, ready for global brands</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══ SLIDE 7 — FABRIC CAPACITY (DARK) ═══ -->
+<section class="slide slide-dark" id="slide-7">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 80% 50%,rgba(58,110,165,0.08) 0%,transparent 70%);pointer-events:none;"></div>
+  <span class="slide-num">07 / 13</span>
+  <div class="slide-inner" style="position:relative;z-index:2;">
+    <div class="a1"><div class="tag tag-dark" data-k="cap_tag">Production Capacity</div></div>
+    <h2 class="h-lg a2 t-white" style="margin:12px 0 24px;" data-k="cap_title"><span style="font-weight:700;">Fabric Unit</span> <span style="font-weight:700;color:#fff;">Capacity</span></h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;" class="r3 sg">
+
+      <!-- Production — Machine / gear cog icon -->
+      <div class="card-dark" style="padding:28px 24px;display:flex;align-items:flex-start;gap:18px;">
+        <div class="iw iw-dark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="label t-wdimmer" style="margin-bottom:8px;" data-k="cap_prod">Production</div>
+          <div style="font-size:32px;font-weight:700;letter-spacing:-0.04em;color:#fff;line-height:1;">4M<span style="font-size:16px;font-weight:600;color:var(--secondary);margin-left:4px;">yds</span></div>
+          <div class="body-sm t-wdim" style="margin-top:5px;" data-k="per_month">Per Month</div>
+        </div>
+      </div>
+
+      <!-- Loom — Loom / weave grid icon -->
+      <div class="card-dark" style="padding:28px 24px;display:flex;align-items:flex-start;gap:18px;">
+        <div class="iw iw-dark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Vertical warp threads -->
+            <line x1="6"  y1="2" x2="6"  y2="22"/>
+            <line x1="12" y1="2" x2="12" y2="22"/>
+            <line x1="18" y1="2" x2="18" y2="22"/>
+            <!-- Horizontal weft threads (alternating weave) -->
+            <path d="M2 7 Q6 6 9 7 Q12 8 15 7 Q18 6 22 7"/>
+            <path d="M2 12 Q6 13 9 12 Q12 11 15 12 Q18 13 22 12"/>
+            <path d="M2 17 Q6 16 9 17 Q12 18 15 17 Q18 16 22 17"/>
+          </svg>
+        </div>
+        <div>
+          <div class="label t-wdimmer" style="margin-bottom:8px;" data-k="cap_loom">Looms</div>
+          <div style="font-size:32px;font-weight:700;letter-spacing:-0.04em;color:#fff;line-height:1;">324</div>
+          <div class="body-sm t-wdim" style="margin-top:5px;" data-k="total_looms">Total Looms Installed</div>
+        </div>
+      </div>
+
+      <!-- Dyeing — Layers / stacked layers icon -->
+      <div class="card-dark" style="padding:28px 24px;display:flex;align-items:flex-start;gap:18px;">
+        <div class="iw iw-dark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+            <polyline points="2 12 12 17 22 12"/>
+            <polyline points="2 17 12 22 22 17"/>
+          </svg>
+        </div>
+        <div>
+          <div class="label t-wdimmer" style="margin-bottom:8px;" data-k="cap_dye">Dyeing</div>
+          <div style="font-size:32px;font-weight:700;letter-spacing:-0.04em;color:#fff;line-height:1;">3</div>
+          <div class="body-sm t-wdim" style="margin-top:5px;" data-k="dye_sub">2 Rope + 1 Slasher</div>
+        </div>
+      </div>
+
+      <!-- Finishing — Tech / circuit board icon -->
+      <div class="card-dark" style="padding:28px 24px;display:flex;align-items:flex-start;gap:18px;">
+        <div class="iw iw-dark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="5" width="14" height="14" rx="2"/>
+            <line x1="9"  y1="5" x2="9"  y2="2"/>
+            <line x1="15" y1="5" x2="15" y2="2"/>
+            <line x1="9"  y1="22" x2="9"  y2="19"/>
+            <line x1="15" y1="22" x2="15" y2="19"/>
+            <line x1="5"  y1="9" x2="2"  y2="9"/>
+            <line x1="5"  y1="15" x2="2"  y2="15"/>
+            <line x1="19" y1="9" x2="22" y2="9"/>
+            <line x1="19" y1="15" x2="22" y2="15"/>
+            <circle cx="12" cy="12" r="2"/>
+          </svg>
+        </div>
+        <div>
+          <div class="label t-wdimmer" style="margin-bottom:8px;" data-k="cap_finish">Finishing</div>
+          <div style="font-size:26px;font-weight:700;letter-spacing:-0.03em;color:#fff;line-height:1.1;" data-k="modern_tech">Modern Tech</div>
+          <div class="body-sm t-wdim" style="margin-top:5px;" data-k="finish_sub">Advanced Technologies</div>
+        </div>
+      </div>
+
+      <!-- Area — Factory / industrial building icon -->
+      <div class="card-dark" style="padding:28px 24px;display:flex;align-items:flex-start;gap:18px;">
+        <div class="iw iw-dark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Factory building with chimney -->
+            <path d="M2 20V9l6-4v4l6-4v4l6-4v15H2z"/>
+            <path d="M8 20v-6h4v6"/>
+            <!-- Chimney stacks -->
+            <line x1="17" y1="5" x2="17" y2="2"/>
+            <line x1="20" y1="5" x2="20" y2="2"/>
+            <!-- Windows -->
+            <rect x="3" y="13" width="2" height="2" rx="0.5"/>
+            <rect x="7" y="13" width="2" height="2" rx="0.5"/>
+          </svg>
+        </div>
+        <div>
+          <div class="label t-wdimmer" style="margin-bottom:8px;" data-k="cap_area">Facility Area</div>
+          <div style="font-size:32px;font-weight:700;letter-spacing:-0.04em;color:#fff;line-height:1;">~100<span style="font-size:16px;font-weight:600;color:var(--secondary);margin-left:4px;">acres</span></div>
+          <div class="body-sm t-wdim" style="margin-top:5px;" data-k="total_area">Total Plant Area</div>
+        </div>
+      </div>
+
+      <!-- Manpower — People icon (unchanged) -->
+      <div class="card-dark" style="padding:28px 24px;display:flex;align-items:flex-start;gap:18px;">
+        <div class="iw iw-dark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div>
+          <div class="label t-wdimmer" style="margin-bottom:8px;" data-k="manpower">Manpower</div>
+          <div style="font-size:32px;font-weight:700;letter-spacing:-0.04em;color:#fff;line-height:1;">1,600+</div>
+          <div class="body-sm t-wdim" style="margin-top:5px;" data-k="skilled_emp">Skilled Employees</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 8 — OPERATIONAL STRENGTHS (LIGHT) ═══ -->
+<section class="slide slide-light" id="slide-8">
+  <span class="slide-num">08 / 13</span>
+  <div class="slide-inner">
+    <div class="a1"><div class="tag tag-light" data-k="ops_tag">Operations</div></div>
+    <h2 class="h-lg a2 t-dark" style="margin:12px 0 22px;" data-k="ops_title">Operational <span class="t-blue">Strengths</span></h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;" class="r3 sg">
+
+      <!-- In-house Yarn — Yarn ball / spool icon -->
+      <div class="card" style="padding:26px 24px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <div class="iw iw-light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <!-- Outer circle = ball shape -->
+              <circle cx="12" cy="12" r="9"/>
+              <!-- Diagonal wrapped thread lines across the ball -->
+              <path d="M6.5 5.5 Q12 10 17.5 18.5"/>
+              <path d="M4 10 Q9 13 14 20"/>
+              <path d="M10 3.5 Q14 9 19 14"/>
+              <!-- Loose thread end coming off top -->
+              <path d="M12 3 Q14 1 16 2"/>
+            </svg>
+          </div>
+          <div class="label t-blue" data-k="in_yarn">In-house Yarn</div>
+        </div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+          <li class="body-sm t-mid" style="display:flex;gap:8px;align-items:flex-start;"><span style="color:var(--accent);font-weight:700;font-size:15px;">›</span><span data-k="ops_yarn1">Total: 240 MT/day</span></li>
+          <li class="body-sm t-mid" style="display:flex;gap:8px;"><span style="color:var(--accent);font-weight:700;font-size:15px;">›</span><span data-k="ops_yarn2">Denim yarn: 90 MT/day</span></li>
+        </ul>
+      </div>
+
+      <!-- Dyeing — Layers icon -->
+      <div class="card" style="padding:26px 24px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <div class="iw iw-light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 12 12 17 22 12"/>
+              <polyline points="2 17 12 22 22 17"/>
+            </svg>
+          </div>
+          <div class="label t-blue" data-k="dyeing">Dyeing</div>
+        </div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+          <li class="body-sm t-mid" style="display:flex;gap:8px;"><span style="color:var(--accent);font-weight:700;font-size:15px;">›</span><span data-k="ops_dye1">Morrison set: 36 Rope</span></li>
+          <li class="body-sm t-mid" style="display:flex;gap:8px;"><span style="color:var(--accent);font-weight:700;font-size:15px;">›</span><span data-k="ops_dye2">Morrison set: 40 Rope</span></li>
+          <li class="body-sm t-mid" style="display:flex;gap:8px;"><span style="color:var(--accent);font-weight:700;font-size:15px;">›</span><span data-k="ops_dye3">1 Slasher Machine</span></li>
+        </ul>
+      </div>
+
+      <!-- Sizing — Size / expand corners icon -->
+      <div class="card" style="padding:26px 24px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <div class="iw iw-light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <!-- Expand / sizing arrows at corners -->
+              <polyline points="15 3 21 3 21 9"/>
+              <polyline points="9 21 3 21 3 15"/>
+              <line x1="21" y1="3" x2="14" y2="10"/>
+              <line x1="3" y1="21" x2="10" y2="14"/>
+            </svg>
+          </div>
+          <div class="label t-blue" data-k="sizing">Sizing</div>
+        </div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+          <li class="body-sm t-mid" style="display:flex;gap:8px;"><span style="color:var(--accent);font-weight:700;font-size:15px;">›</span><span data-k="ops_siz1">Karl Mayer &amp; Ukil</span></li>
+          <li class="body-sm t-mid" style="display:flex;gap:8px;"><span style="color:var(--accent);font-weight:700;font-size:15px;">›</span><span data-k="ops_siz2">Double Nip + Double Dip</span></li>
+        </ul>
+      </div>
+
+      <!-- Weaving — Loom / weave grid icon -->
+      <div class="card" style="padding:26px 24px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <div class="iw iw-light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <!-- Vertical warp threads -->
+              <line x1="6"  y1="2" x2="6"  y2="22"/>
+              <line x1="12" y1="2" x2="12" y2="22"/>
+              <line x1="18" y1="2" x2="18" y2="22"/>
+              <!-- Horizontal weft threads (sinusoidal weave) -->
+              <path d="M2 7 Q6 6 9 7 Q12 8 15 7 Q18 6 22 7"/>
+              <path d="M2 12 Q6 13 9 12 Q12 11 15 12 Q18 13 22 12"/>
+              <path d="M2 17 Q6 16 9 17 Q12 18 15 17 Q18 16 22 17"/>
+            </svg>
+          </div>
+          <div class="label t-blue" data-k="weaving">Weaving</div>
+        </div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+          <li class="body-sm t-mid" style="display:flex;gap:8px;"><span style="color:var(--accent);font-weight:700;font-size:15px;">›</span><span data-k="ops_weav1">Airjet: 216 machines</span></li>
+          <li class="body-sm t-mid" style="display:flex;gap:8px;"><span style="color:var(--accent);font-weight:700;font-size:15px;">›</span><span data-k="ops_weav2">Rapier: 108 machines</span></li>
+        </ul>
+      </div>
+
+      <!-- Finishing — Machine / gear cog icon -->
+      <div class="card" style="padding:26px 24px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <div class="iw iw-light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </div>
+          <div class="label t-blue" data-k="finishing">Finishing</div>
+        </div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+          <li class="body-sm t-mid" style="display:flex;gap:8px;"><span style="color:var(--accent);font-weight:700;font-size:15px;">›</span><span data-k="ops_fin1">01 Singeing (Osthoff)</span></li>
+          <li class="body-sm t-mid" style="display:flex;gap:8px;"><span style="color:var(--accent);font-weight:700;font-size:15px;">›</span><span data-k="ops_fin2">02 Stenter (Monfongs)</span></li>
+          <li class="body-sm t-mid" style="display:flex;gap:8px;"><span style="color:var(--accent);font-weight:700;font-size:15px;">›</span><span data-k="ops_fin3">01 Mercerization (Goller)</span></li>
+          <li class="body-sm t-mid" style="display:flex;gap:8px;"><span style="color:var(--accent);font-weight:700;font-size:15px;">›</span><span data-k="ops_fin4">02 Sanfor (Morrison)</span></li>
+        </ul>
+      </div>
+
+      <!-- Quality Assurance — Checkmark shield icon (unchanged) -->
+      <div class="card" style="padding:26px 24px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <div class="iw iw-light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div class="label t-blue" data-k="quality">Quality Assurance</div>
+        </div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+          <li class="body-sm t-mid" style="display:flex;gap:8px;"><span style="color:var(--accent);font-weight:700;font-size:15px;">›</span><span data-k="ops_qa1">4-point measuring system</span></li>
+          <li class="body-sm t-mid" style="display:flex;gap:8px;"><span style="color:var(--accent);font-weight:700;font-size:15px;">›</span><span data-k="ops_qa2">Applied on all fabrics</span></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 9 — SUSTAINABILITY (DARK) ═══ -->
+<section class="slide slide-dark" id="slide-9">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 80% 50%,rgba(58,110,165,0.08) 0%,transparent 70%);pointer-events:none;"></div>
+  <span class="slide-num">09 / 13</span>
+  <div class="slide-inner" style="position:relative;z-index:2;">
+    <div class="a1"><div class="tag tag-dark" data-k="sust_tag">Sustainability</div></div>
+    <h2 class="h-lg a2 t-white" style="margin:12px 0 24px;" data-k="sust_title">Sustainable <span style="color:rgba(255,255,255,0.7);">Practices</span></h2>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:18px;" class="r5 sg">
+
+      <!-- Raw Materials -->
+      <div class="card-dark" style="padding:28px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;">
+        <div class="iw iw-dark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="5" r="2"/><circle cx="6" cy="9" r="2"/><circle cx="18" cy="9" r="2"/>
+            <circle cx="8" cy="15" r="2"/><circle cx="16" cy="15" r="2"/>
+            <path d="M12 7v4"/><path d="M8 11l2 2"/><path d="M16 11l-2 2"/>
+            <path d="M10 17l2 4"/><path d="M14 17l-2 4"/>
+          </svg>
+        </div>
+        <div class="label t-wdimmer" data-k="raw_mat">Raw Materials</div>
+        <div class="body-sm t-wdim" data-k="raw_mat_d">PCW, PIW, Recycled polyester, Regenerated cotton, Natural fibers</div>
+      </div>
+
+      <!-- Green Chemicals -->
+      <div class="card-dark" style="padding:28px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;">
+        <div class="iw iw-dark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 3h6"/><path d="M10 3v5.5L5.5 16a2 2 0 0 0 1.8 3h9.4a2 2 0 0 0 1.8-3L14 8.5V3"/>
+            <path d="M6.5 18h11"/>
+          </svg>
+        </div>
+        <div class="label t-wdimmer" data-k="green_chem">Green Chemicals</div>
+        <div class="body-sm t-wdim" data-k="green_chem_d">Aniline-free indigo, Non-hazardous chemicals, Caustic recovery plant</div>
+      </div>
+
+      <!-- Eco Dyeing -->
+      <div class="card-dark" style="padding:28px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;">
+        <div class="iw iw-dark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+            <polyline points="2 12 12 17 22 12"/>
+            <polyline points="2 17 12 22 22 17"/>
+          </svg>
+        </div>
+        <div class="label t-wdimmer" data-k="eco_dye">Eco Dyeing</div>
+        <div class="body-sm t-wdim" data-k="eco_dye_d">Cactus technology (90% water saving), CleanKore eco-friendly dyeing</div>
+      </div>
+
+      <!-- Water Saving -->
+      <div class="card-dark" style="padding:28px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;">
+        <div class="iw iw-dark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0L12 2.69z"/>
+          </svg>
+        </div>
+        <div class="label t-wdimmer" data-k="water_save">Water Saving</div>
+        <div class="body-sm t-wdim" data-k="water_save_d">Biological ETP, Cyclone process using recycled water in dyeing</div>
+      </div>
+
+      <!-- CO₂ Reduction -->
+      <div class="card-dark" style="padding:28px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;">
+        <div class="iw iw-dark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/>
+            <polyline points="17 18 23 18 23 12"/>
+          </svg>
+        </div>
+        <div class="label t-wdimmer" data-k="co2_red">CO₂ Reduction</div>
+        <div class="body-sm t-wdim" data-k="co2_red_d">EGB &amp; Economizer 30, reuse of 30% recycled water in production</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 10 — PRODUCT RANGE (LIGHT) ═══ -->
+<section class="slide slide-light" id="slide-10">
+  <span class="slide-num">10 / 13</span>
+  <div class="slide-inner">
+    <div class="a1"><div class="tag tag-light" data-k="prod_tag">Product Portfolio</div></div>
+    <h2 class="h-lg a2 t-dark" style="margin:12px 0 22px;" data-k="prod_title">Product <span class="t-blue">Range</span></h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;" class="r3 sg">
+
+      <!-- Shade Variants -->
+      <div class="card" style="padding:24px 22px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div style="width:5px;height:20px;background:var(--primary);border-radius:3px;flex-shrink:0;"></div>
+          <div class="label t-blue" data-k="shade_v">Shade Variants</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="body-sm t-mid" data-k="pv_shade1" style="padding:9px 14px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;transition:all 0.2s;cursor:default;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border-soft)';this.style.background='var(--surface-2)'">100% pure deep or light indigo</div>
+          <div class="body-sm t-mid" data-k="pv_shade2" style="padding:9px 14px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;transition:all 0.2s;cursor:default;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border-soft)';this.style.background='var(--surface-2)'">Sulphur topping/bottoming</div>
+          <div class="body-sm t-mid" data-k="pv_shade3" style="padding:9px 14px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;transition:all 0.2s;cursor:default;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border-soft)';this.style.background='var(--surface-2)'">100% sulphur or reactive colors</div>
+        </div>
+      </div>
+
+      <!-- Stretch Variants -->
+      <div class="card" style="padding:24px 22px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div style="width:5px;height:20px;background:var(--primary);border-radius:3px;flex-shrink:0;"></div>
+          <div class="label t-blue" data-k="stretch_v">Stretch Variants</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="body-sm t-mid" data-k="pv_str1" style="padding:9px 14px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;transition:all 0.2s;cursor:default;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border-soft)';this.style.background='var(--surface-2)'">Horizontal stretch</div>
+          <div class="body-sm t-mid" data-k="pv_str2" style="padding:9px 14px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;transition:all 0.2s;cursor:default;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border-soft)';this.style.background='var(--surface-2)'">Vertical stretch</div>
+          <div class="body-sm t-mid" data-k="pv_str3" style="padding:9px 14px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;transition:all 0.2s;cursor:default;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border-soft)';this.style.background='var(--surface-2)'">4-way stretch</div>
+        </div>
+      </div>
+
+      <!-- Weave Variants -->
+      <div class="card" style="padding:24px 22px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div style="width:5px;height:20px;background:var(--primary);border-radius:3px;flex-shrink:0;"></div>
+          <div class="label t-blue" data-k="weave_v">Weave Variants</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="body-sm t-mid" data-k="pv_weav1" style="padding:9px 14px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;transition:all 0.2s;cursor:default;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border-soft)';this.style.background='var(--surface-2)'">3/1 RHT, 3/1 LHT, 2/1 RHT</div>
+          <div class="body-sm t-mid" data-k="pv_weav2" style="padding:9px 14px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;transition:all 0.2s;cursor:default;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border-soft)';this.style.background='var(--surface-2)'">Knit-look, Stripes &amp; check</div>
+          <div class="body-sm t-mid" data-k="pv_weav3" style="padding:9px 14px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;transition:all 0.2s;cursor:default;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border-soft)';this.style.background='var(--surface-2)'">Double face &amp; canvas denim</div>
+        </div>
+      </div>
+
+      <!-- Yarn Variants -->
+      <div class="card" style="padding:24px 22px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div style="width:5px;height:20px;background:var(--primary);border-radius:3px;flex-shrink:0;"></div>
+          <div class="label t-blue" data-k="yarn_v">Yarn Variants</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="body-sm t-mid" data-k="pv_yarn1" style="padding:9px 14px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;transition:all 0.2s;cursor:default;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border-soft)';this.style.background='var(--surface-2)'">Viscose/Tencel/Linen blended</div>
+          <div class="body-sm t-mid" data-k="pv_yarn2" style="padding:9px 14px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;transition:all 0.2s;cursor:default;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border-soft)';this.style.background='var(--surface-2)'">Siro spun, PC/CVC yarn</div>
+          <div class="body-sm t-mid" data-k="pv_yarn3" style="padding:9px 14px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;transition:all 0.2s;cursor:default;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border-soft)';this.style.background='var(--surface-2)'">Elastane/T400, Indigo dyed weft</div>
+        </div>
+      </div>
+
+      <!-- Finish Variants -->
+      <div class="card" style="padding:24px 22px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div style="width:5px;height:20px;background:var(--primary);border-radius:3px;flex-shrink:0;"></div>
+          <div class="label t-blue" data-k="finish_v">Finish Variants</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="body-sm t-mid" data-k="pv_fin1" style="padding:9px 14px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;transition:all 0.2s;cursor:default;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border-soft)';this.style.background='var(--surface-2)'">Mercerize</div>
+          <div class="body-sm t-mid" data-k="pv_fin2" style="padding:9px 14px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;transition:all 0.2s;cursor:default;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border-soft)';this.style.background='var(--surface-2)'">Overdyed</div>
+          <div class="body-sm t-mid" data-k="pv_fin3" style="padding:9px 14px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;transition:all 0.2s;cursor:default;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border-soft)';this.style.background='var(--surface-2)'">Calendaring</div>
+        </div>
+      </div>
+
+      <!-- Coated Variants -->
+      <div class="card" style="padding:24px 22px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div style="width:5px;height:20px;background:var(--primary);border-radius:3px;flex-shrink:0;"></div>
+          <div class="label t-blue" data-k="coat_v">Coated Variants</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="body-sm t-mid" data-k="pv_coat1" style="padding:9px 14px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;transition:all 0.2s;cursor:default;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border-soft)';this.style.background='var(--surface-2)'">Polyurethane coats</div>
+          <div class="body-sm t-mid" data-k="pv_coat2" style="padding:9px 14px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;transition:all 0.2s;cursor:default;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border-soft)';this.style.background='var(--surface-2)'">Acrylic coats</div>
+          <div class="body-sm t-mid" data-k="pv_coat3" style="padding:9px 14px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;transition:all 0.2s;cursor:default;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border-soft)';this.style.background='var(--surface-2)'">Shiny coats</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 11 — CERTIFICATIONS (DARK) ═══ -->
+<section class="slide slide-dark" id="slide-11">
+  <span class="slide-num">11 / 13</span>
+  <div class="slide-inner">
+    <div class="a1"><div class="tag tag-dark" data-k="cert_tag">Standards &amp; Compliance</div></div>
+    <h2 class="h-lg a2 t-white" style="margin:12px 0 24px;" data-k="cert_title">Global <span style="color:#fff;">Certifications</span></h2>
+    <div class="cert-grid sg">
+      <div class="cert-card">
+        <div class="cert-img-wrap"><img src="https://i.postimg.cc/7ZWvZCCQ/GOOTS.png" alt="GOTS"></div>
+        <div class="cert-name">GOTS</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-img-wrap"><img src="https://i.postimg.cc/445S3Kqj/Oeko-tex.png" alt="OEKO-TEX"></div>
+        <div class="cert-name">OEKO-TEX®</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-img-wrap"><img src="https://i.postimg.cc/vHKX15zJ/GRS.png" alt="GRS"></div>
+        <div class="cert-name">Global Recycled Standard</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-img-wrap"><img src="https://i.postimg.cc/3R9F3GNq/ISO-Logo.png" alt="ISO 9001"></div>
+        <div class="cert-name">ISO 9001:2015</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-img-wrap"><img src="https://i.postimg.cc/TPBXCyfk/BCI.png" alt="BCI"></div>
+        <div class="cert-name">BCI</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-img-wrap"><img src="https://i.postimg.cc/9X8YSyvc/Higg.png" alt="Higg Index"></div>
+        <div class="cert-name">Higg Index</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-img-wrap"><img src="https://i.postimg.cc/JhLNJxBQ/Regenagri.png" alt="Regenagri"></div>
+        <div class="cert-name">Regenagri</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-img-wrap"><img src="https://i.postimg.cc/28LhKMdp/Organic-100.png" alt="Organic 100"></div>
+        <div class="cert-name">Organic 100</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-img-wrap"><img src="https://i.postimg.cc/pTdnY6Vr/BSCI-Logo.png" alt="BSCI"></div>
+        <div class="cert-name">BSCI</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-img-wrap"><img src="https://i.postimg.cc/J0pM8Mfm/Good-Earth.png" alt="Good Earth Cotton"></div>
+        <div class="cert-name">Good Earth Cotton</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 12 — BUSINESS PARTNERS (DARK) ═══ -->
+<section class="slide slide-dark" id="slide-12">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 60%,rgba(58,110,165,0.07) 0%,transparent 70%);pointer-events:none;"></div>
+  <span class="slide-num">12 / 13</span>
+  <div style="width:100%;max-width:1220px;position:relative;z-index:2;display:flex;flex-direction:column;gap:20px;">
+    <div class="a1"><div class="tag tag-dark" data-k="partners_tag">Global Partnerships</div></div>
+    <h2 class="h-lg a2 t-white" data-k="partners_title">Business <span style="color:#fff;">Partners</span></h2>
+    <p class="body a3 t-wdim" style="margin-bottom:10px;" data-k="partners_sub">Trusted by the world's most iconic fashion brands</p>
+
+    <!-- Row 1 marquee →  -->
+    <div class="marquee-outer">
+      <div class="marquee-track" id="track1"></div>
+    </div>
+    <!-- Row 2 marquee ← -->
+    <div class="marquee-outer" style="margin-top:6px;">
+      <div class="marquee-track" id="track2" style="animation-direction:reverse;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SLIDE 13 — THANK YOU (DARK) ═══ -->
+<section class="slide slide-dark" id="slide-13">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,rgba(58,110,165,0.1) 0%,rgba(0,78,152,0.05) 50%,transparent 80%);pointer-events:none;"></div>
+  <!-- large background text -->
+  <div style="position:absolute;font-size:clamp(100px,18vw,260px);font-weight:700;letter-spacing:-0.06em;color:rgba(255,255,255,0.03);line-height:1;user-select:none;pointer-events:none;white-space:nowrap;top:50%;transform:translateY(-50%);" data-k="ty_bg">THANK YOU</div>
+  <span class="slide-num">13 / 13</span>
+  <div style="position:relative;z-index:2;text-align:center;display:flex;flex-direction:column;align-items:center;gap:24px;">
+    <div class="a1" style="font-size:clamp(52px,8vw,110px);font-weight:700;letter-spacing:-0.05em;color:#fff;line-height:1;white-space:nowrap;" data-k="ty_line">Thank You</div>
+    <div class="a2" style="width:60px;height:4px;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:4px;"></div>
+    <div class="a3">
+      <a href="mailto:hello@squaredenims.com" style="font-size:20px;font-weight:500;color:rgba(255,255,255,0.6);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">hello@squaredenims.com</a>
+    </div>
+    <!-- Social media icons -->
+    <div class="a4" style="display:flex;align-items:center;gap:16px;margin-top:4px;">
+
+      <!-- Facebook -->
+      <a href="https://www.facebook.com/SquareDenim" target="_blank"
+         style="width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);
+                display:flex;align-items:center;justify-content:center;
+                color:rgba(255,255,255,0.65);text-decoration:none;
+                transition:background 0.25s,border-color 0.25s,color 0.25s,transform 0.25s;"
+         onmouseover="this.style.background='rgba(255,255,255,0.22)';this.style.borderColor='rgba(255,255,255,0.5)';this.style.color='#fff';this.style.transform='translateY(-3px)'"
+         onmouseout="this.style.background='rgba(255,255,255,0.1)';this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(255,255,255,0.65)';this.style.transform='translateY(0)'"
+         title="Facebook">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+        </svg>
+      </a>
+
+      <!-- Instagram -->
+      <a href="https://www.instagram.com/squaredenims" target="_blank"
+         style="width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);
+                display:flex;align-items:center;justify-content:center;
+                color:rgba(255,255,255,0.65);text-decoration:none;
+                transition:background 0.25s,border-color 0.25s,color 0.25s,transform 0.25s;"
+         onmouseover="this.style.background='rgba(255,255,255,0.22)';this.style.borderColor='rgba(255,255,255,0.5)';this.style.color='#fff';this.style.transform='translateY(-3px)'"
+         onmouseout="this.style.background='rgba(255,255,255,0.1)';this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(255,255,255,0.65)';this.style.transform='translateY(0)'"
+         title="Instagram">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
+        </svg>
+      </a>
+
+      <!-- LinkedIn -->
+      <a href="https://www.linkedin.com/company/squaredenim" target="_blank"
+         style="width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);
+                display:flex;align-items:center;justify-content:center;
+                color:rgba(255,255,255,0.65);text-decoration:none;
+                transition:background 0.25s,border-color 0.25s,color 0.25s,transform 0.25s;"
+         onmouseover="this.style.background='rgba(255,255,255,0.22)';this.style.borderColor='rgba(255,255,255,0.5)';this.style.color='#fff';this.style.transform='translateY(-3px)'"
+         onmouseout="this.style.background='rgba(255,255,255,0.1)';this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(255,255,255,0.65)';this.style.transform='translateY(0)'"
+         title="LinkedIn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+          <rect x="2" y="9" width="4" height="12"/>
+          <circle cx="4" cy="4" r="2"/>
+        </svg>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+</div><!-- /deck -->
+
+<!-- ================================================================
+     JAVASCRIPT
+     — T object        : base translations (9 languages)
+     — ext block       : extended keys for all slides & languages
+     — setLang()       : apply selected language to DOM
+     — Slide engine    : goTo(), keyboard, dot nav, counter
+     — Autoplay / Donut chart / Partners marquee / Cursor
+     ================================================================ -->
+<script>
+// ================================================================
+// TRANSLATIONS
+// ================================================================
+const T = {
+en:{tagline:"A Decade of Denim Excellence",cover_l1:"Square Denims",biz_profile:"Business Profile",est_tag:"Est. 2015 · Habiganj, Bangladesh",our_heritage:"Our Heritage",layout:"Layout",story_body:"SQUARE today symbolizes a name — a state of mind. Since inception in 1958 as a pharmaceutical venture, it has grown into one of Bangladesh's most successful conglomerates, pioneering diversified fields across six decades of excellence.",s_healthcare:"Healthcare",s_textile:"Textile",s_consumer:"Consumer & Food",s_media:"Media & Comm.",s_aviation:"Aviation",fin_overview:"Financial Overview",fin_title:"Group Turnover & Market Presence",group_turnover:"Group Turnover 2023–24",companies:"Companies",market_cap:"Market Cap",listed:"Stock Listed",listed_sub:"Pharma & Textiles",textile_tag:"Textile Division",text_body:"Securing 33% of the group's turnover, built on commitment to quality production and continuous diversification. Square entered textiles in 1997 with spinning — today spanning six world-class entities.",tc1:"Square Textiles Ltd.",tc1d:"Versatile & Valued yarn manufacturer.",tc2:"Square Fashions Ltd.",tc2d:"Knit Fabric & Garments Manufacturer.",tc3:"Square Denims Ltd.",tc3d:"Denim Fabric & Jeanswear Manufacturer.",tc4:"Square Apparels Ltd.",tc4d:"Woven & non-denim Fabric & Garments.",sd_tag:"Square Denims Limited",sd_body:"Based in Habiganj, north-eastern Bangladesh, this denim factory was founded in 2015 equipped with cutting-edge machinery to produce a wide range of denim fabrics — making it one of the country's most innovative fabric manufacturers. Square Denims strives for creativity and excellence, achieving it naturally with a touch of heritage.",insert_factory:"Insert Factory Image",founded:"Founded",cap_tag:"Production Capacity",cap_prod:"Production",per_month:"per month",cap_loom:"Looms",total_looms:"Total looms installed",cap_dye:"Dyeing",dye_sub:"2 rope + 1 slasher",cap_finish:"Finishing",modern_tech:"Modern Tech",finish_sub:"Advanced technologies",cap_area:"Facility Area",total_area:"Total plant area",manpower:"Manpower",skilled_emp:"Skilled employees",ops_tag:"Operations",in_yarn:"In-house Yarn",dyeing:"Dyeing",sizing:"Sizing",weaving:"Weaving",finishing:"Finishing",quality:"Quality Assurance",sust_tag:"Sustainability",raw_mat:"Raw Materials",raw_mat_d:"PCW, PIW, Recycled polyester, Regenerated cotton, Natural fibers",green_chem:"Green Chemicals",green_chem_d:"Aniline-free indigo, Non-hazardous chemicals, Caustic recovery plant",eco_dye:"Eco Dyeing",eco_dye_d:"Cactus technology (90% water saving), CleanKore eco-friendly dyeing",water_save:"Water Saving",water_save_d:"Biological ETP, Cyclone process using recycled water in dyeing",co2_red:"CO₂ Reduction",co2_red_d:"EGB & Economizer 30, reuse of 30% recycled water in production",prod_tag:"Product Portfolio",shade_v:"Shade Variants",stretch_v:"Stretch Variants",weave_v:"Weave Variants",yarn_v:"Yarn Variants",finish_v:"Finish Variants",coat_v:"Coated Variants",cert_tag:"Standards & Compliance",partners_tag:"Global Partnerships",partners_sub:"Trusted by the world's most iconic fashion brands",ty_bg:"THANK YOU",ty_line:"Thank You",theme:"Theme",autoplay:"Auto-play",language:"Language"},
+es:{tagline:"Una Década de Excelencia en Denim",biz_profile:"Perfil de Negocios",est_tag:"Est. 2015 · Habiganj, Bangladesh",our_heritage:"Nuestra Historia",story_body:"SQUARE hoy simboliza un nombre — un estado mental. Desde su inicio en 1958 como empresa farmacéutica, se ha convertido en uno de los conglomerados más exitosos de Bangladesh, siendo pionera en diversos campos a lo largo de seis décadas.",s_healthcare:"Salud",s_textile:"Textil",s_consumer:"Consumidor y Alimentos",s_media:"Medios",s_aviation:"Aviación",fin_overview:"Resumen Financiero",fin_title:"Facturación del Grupo y Presencia en el Mercado",group_turnover:"Facturación Grupo 2023–24",companies:"Empresas",market_cap:"Cap. de Mercado",listed:"Cotizadas en Bolsa",listed_sub:"Pharma y Textiles",textile_tag:"División Textil",text_body:"Asegurando el 33% de la facturación del grupo, construida sobre el compromiso con la calidad de producción y la diversificación continua. Square entró en textiles en 1997 con hilado.",tc1:"Square Textiles Ltda.",tc1d:"Fabricante versátil y reconocido de hilados.",tc2:"Square Fashions Ltda.",tc2d:"Fabricante de tejidos de punto y prendas.",tc3:"Square Denims Ltda.",tc3d:"Fabricante de tela denim y jeanswear.",tc4:"Square Apparels Ltda.",tc4d:"Fabricante de tela tejida y prendas.",sd_tag:"Square Denims Limited",sd_body:"Con sede en Habiganj, noreste de Bangladesh, esta fábrica de denim fue fundada en 2015 con maquinaria de vanguardia para producir una amplia gama de telas denim, siendo uno de los fabricantes más innovadores del país.",insert_factory:"Insertar Imagen de Fábrica",founded:"Fundada",cap_tag:"Capacidad de Producción",cap_prod:"Producción",per_month:"por mes",cap_loom:"Telares",total_looms:"Total de telares instalados",cap_dye:"Tinte",dye_sub:"2 cuerda + 1 slasher",cap_finish:"Acabado",modern_tech:"Tecnología Moderna",finish_sub:"Tecnologías avanzadas",cap_area:"Área de Planta",total_area:"Área total de la planta",manpower:"Personal",skilled_emp:"Empleados cualificados",ops_tag:"Operaciones",in_yarn:"Hilo Interno",dyeing:"Tinte",sizing:"Encolado",weaving:"Tejido",finishing:"Acabado",quality:"Control de Calidad",sust_tag:"Sostenibilidad",raw_mat:"Materias Primas",raw_mat_d:"PCW, PIW, poliéster reciclado, algodón regenerado, fibras naturales",green_chem:"Químicos Verdes",green_chem_d:"Índigo sin anilina, químicos no peligrosos, planta de recuperación de cáusticos",eco_dye:"Tinte Ecológico",eco_dye_d:"Tecnología Cactus (90% ahorro de agua), CleanKore ecológico",water_save:"Ahorro de Agua",water_save_d:"ETP Biológico, proceso Cyclone con agua reciclada en tinte",co2_red:"Reducción CO₂",co2_red_d:"EGB y Economizador 30, reutilización del 30% de agua reciclada",prod_tag:"Portafolio de Productos",shade_v:"Variantes de Tono",stretch_v:"Variantes de Elasticidad",weave_v:"Variantes de Tejido",yarn_v:"Variantes de Hilo",finish_v:"Variantes de Acabado",coat_v:"Variantes con Revestimiento",cert_tag:"Normas y Cumplimiento",partners_tag:"Alianzas Globales",partners_sub:"De confianza para las marcas de moda más icónicas del mundo",ty_bg:"GRACIAS",ty_line:"Gracias",theme:"Tema",autoplay:"Auto-reproducción",language:"Idioma"},
+it:{tagline:"Un Decennio di Eccellenza nel Denim",biz_profile:"Profilo Aziendale",est_tag:"Fond. 2015 · Habiganj, Bangladesh",our_heritage:"La Nostra Storia",story_body:"SQUARE oggi simboleggia un nome — uno stato mentale. Dal 1958 come impresa farmaceutica, è diventata uno dei conglomerati più prosperi del Bangladesh, pioniera in settori diversificati lungo sei decenni.",s_healthcare:"Salute",s_textile:"Tessile",s_consumer:"Consumatori e Alimentare",s_media:"Media",s_aviation:"Aviazione",fin_overview:"Panoramica Finanziaria",fin_title:"Fatturato del Gruppo e Presenza sul Mercato",group_turnover:"Fatturato Gruppo 2023–24",companies:"Aziende",market_cap:"Capitalizzazione",listed:"Quotate in Borsa",listed_sub:"Pharma e Textiles",textile_tag:"Divisione Tessile",text_body:"Garantendo il 33% del fatturato del gruppo, costruita sull'impegno per la qualità produttiva e la diversificazione continua. Square è entrata nel tessile nel 1997 con la filatura.",tc1:"Square Textiles Srl",tc1d:"Produttore versatile e rinomato di filati.",tc2:"Square Fashions Srl",tc2d:"Produttore di tessuto a maglia e capi.",tc3:"Square Denims Srl",tc3d:"Produttore di tessuto denim e jeanswear.",tc4:"Square Apparels Srl",tc4d:"Produttore di tessuto tessuto e capi.",sd_tag:"Square Denims Limited",sd_body:"Con sede a Habiganj, nel Bangladesh nord-orientale, questa fabbrica di denim è stata fondata nel 2015 con macchinari all'avanguardia per produrre un'ampia gamma di tessuti denim, essendo uno dei produttori più innovativi del paese.",insert_factory:"Inserisci Immagine Fabbrica",founded:"Fondata",cap_tag:"Capacità Produttiva",cap_prod:"Produzione",per_month:"al mese",cap_loom:"Telai",total_looms:"Telai totali installati",cap_dye:"Tintura",dye_sub:"2 corda + 1 slasher",cap_finish:"Finitura",modern_tech:"Tecnologia Moderna",finish_sub:"Tecnologie avanzate",cap_area:"Area Impianto",total_area:"Area totale impianto",manpower:"Personale",skilled_emp:"Dipendenti qualificati",ops_tag:"Operazioni",in_yarn:"Filato Interno",dyeing:"Tintura",sizing:"Incollaggio",weaving:"Tessitura",finishing:"Finitura",quality:"Garanzia Qualità",sust_tag:"Sostenibilità",raw_mat:"Materie Prime",raw_mat_d:"PCW, PIW, poliestere riciclato, cotone rigenerato, fibre naturali",green_chem:"Prodotti Chimici Verdi",green_chem_d:"Indaco senza anilina, prodotti non pericolosi, impianto di recupero caustici",eco_dye:"Tintura Eco",eco_dye_d:"Tecnologia Cactus (90% risparmio idrico), CleanKore ecologico",water_save:"Risparmio Idrico",water_save_d:"ETP biologico, processo Cyclone con acqua riciclata in tintura",co2_red:"Riduzione CO₂",co2_red_d:"EGB ed Economizer 30, riutilizzo del 30% di acqua riciclata",prod_tag:"Portafoglio Prodotti",shade_v:"Varianti di Tinta",stretch_v:"Varianti di Elasticità",weave_v:"Varianti di Tessitura",yarn_v:"Varianti di Filato",finish_v:"Varianti di Finitura",coat_v:"Varianti Rivestite",cert_tag:"Standard e Conformità",partners_tag:"Partnership Globali",partners_sub:"Fiducia dei brand di moda più iconici al mondo",ty_bg:"GRAZIE",ty_line:"Grazie",theme:"Tema",autoplay:"Riproduzione Auto",language:"Lingua"},
+fr:{tagline:"Une Décennie d'Excellence dans le Denim",biz_profile:"Profil d'Entreprise",est_tag:"Est. 2015 · Habiganj, Bangladesh",our_heritage:"Notre Histoire",story_body:"SQUARE symbolise aujourd'hui un nom — un état d'esprit. Depuis 1958 comme entreprise pharmaceutique, elle est devenue l'un des conglomérats les plus prospères du Bangladesh, pionnière dans des domaines diversifiés sur six décennies.",s_healthcare:"Santé",s_textile:"Textile",s_consumer:"Consommation et Alimentation",s_media:"Médias",s_aviation:"Aviation",fin_overview:"Aperçu Financier",fin_title:"Chiffre d'Affaires du Groupe et Présence sur le Marché",group_turnover:"CA Groupe 2023–24",companies:"Entreprises",market_cap:"Capitalisation",listed:"Cotées en Bourse",listed_sub:"Pharma et Textiles",textile_tag:"Division Textile",text_body:"Représentant 33% du chiffre d'affaires du groupe, construite sur l'engagement envers la qualité de production et la diversification continue. Square est entrée dans le textile en 1997 avec le filage.",tc1:"Square Textiles Sàrl",tc1d:"Fabricant polyvalent et reconnu de fils.",tc2:"Square Fashions Sàrl",tc2d:"Fabricant de tissu tricoté et vêtements.",tc3:"Square Denims Sàrl",tc3d:"Fabricant de tissu denim et jeanswear.",tc4:"Square Apparels Sàrl",tc4d:"Fabricant de tissu tissé et vêtements.",sd_tag:"Square Denims Limited",sd_body:"Basée à Habiganj, dans le nord-est du Bangladesh, cette usine de denim a été fondée en 2015 avec des machines de pointe pour produire une large gamme de tissus denim, étant l'un des fabricants les plus innovants du pays.",insert_factory:"Insérer Image Usine",founded:"Fondée",cap_tag:"Capacité de Production",cap_prod:"Production",per_month:"par mois",cap_loom:"Métiers",total_looms:"Métiers totaux installés",cap_dye:"Teinture",dye_sub:"2 corde + 1 slasher",cap_finish:"Finition",modern_tech:"Technologie Moderne",finish_sub:"Technologies avancées",cap_area:"Surface Usine",total_area:"Surface totale",manpower:"Personnel",skilled_emp:"Employés qualifiés",ops_tag:"Opérations",in_yarn:"Fil Maison",dyeing:"Teinture",sizing:"Encollage",weaving:"Tissage",finishing:"Finition",quality:"Assurance Qualité",sust_tag:"Durabilité",raw_mat:"Matières Premières",raw_mat_d:"PCW, PIW, polyester recyclé, coton régénéré, fibres naturelles",green_chem:"Produits Chimiques Verts",green_chem_d:"Indigo sans aniline, produits non dangereux, récupération de caustique",eco_dye:"Teinture Écologique",eco_dye_d:"Technologie Cactus (90% d'économie d'eau), CleanKore écologique",water_save:"Économie d'Eau",water_save_d:"ETP biologique, processus Cyclone avec eau recyclée en teinture",co2_red:"Réduction CO₂",co2_red_d:"EGB et Économiseur 30, réutilisation de 30% d'eau recyclée",prod_tag:"Portefeuille Produits",shade_v:"Variantes de Teinte",stretch_v:"Variantes d'Élasticité",weave_v:"Variantes de Tissage",yarn_v:"Variantes de Fil",finish_v:"Variantes de Finition",coat_v:"Variantes Enduites",cert_tag:"Normes et Conformité",partners_tag:"Partenariats Mondiaux",partners_sub:"Partenaire de confiance des marques de mode les plus emblématiques",ty_bg:"MERCI",ty_line:"Merci",theme:"Thème",autoplay:"Lecture Auto",language:"Langue"},
+de:{tagline:"Ein Jahrzehnt Denim-Exzellenz",biz_profile:"Unternehmensprofil",est_tag:"Gegr. 2015 · Habiganj, Bangladesch",our_heritage:"Unsere Geschichte",story_body:"SQUARE steht heute für einen Namen — eine Denkweise. Seit 1958 als Pharmaunternehmen gegründet, ist es zu einem der erfolgreichsten Konglomerate Bangladeschs gewachsen, Pionier in vielfältigen Bereichen über sechs Jahrzehnte.",s_healthcare:"Gesundheit",s_textile:"Textil",s_consumer:"Konsumgüter und Lebensmittel",s_media:"Medien",s_aviation:"Luftfahrt",fin_overview:"Finanzieller Überblick",fin_title:"Konzernumsatz und Marktpräsenz",group_turnover:"Konzernumsatz 2023–24",companies:"Unternehmen",market_cap:"Marktkapitalisierung",listed:"Börsennotiert",listed_sub:"Pharma und Textilien",textile_tag:"Textilsparte",text_body:"Sicherung von 33% des Konzernumsatzes, aufgebaut auf dem Engagement für Qualitätsproduktion und kontinuierliche Diversifizierung. Square trat 1997 mit Spinning ins Textilgeschäft ein.",tc1:"Square Textiles GmbH",tc1d:"Vielseitiger und renommierter Garnhersteller.",tc2:"Square Fashions GmbH",tc2d:"Hersteller von Strickwaren und Bekleidung.",tc3:"Square Denims GmbH",tc3d:"Hersteller von Denimstoff und Jeanswear.",tc4:"Square Apparels GmbH",tc4d:"Hersteller von Webwaren und Bekleidung.",sd_tag:"Square Denims Limited",sd_body:"Mit Sitz in Habiganj, im Nordosten Bangladeschs, wurde diese Denimfabrik 2015 mit modernsten Maschinen gegründet, um eine breite Palette von Denimgeweben herzustellen, und gilt als einer der innovativsten Hersteller des Landes.",insert_factory:"Fabrikbild einfügen",founded:"Gegründet",cap_tag:"Produktionskapazität",cap_prod:"Produktion",per_month:"pro Monat",cap_loom:"Webmaschinen",total_looms:"Webmaschinen gesamt",cap_dye:"Färbung",dye_sub:"2 Seil + 1 Slasher",cap_finish:"Veredlung",modern_tech:"Moderne Technologie",finish_sub:"Fortschrittliche Technologien",cap_area:"Werksgelände",total_area:"Gesamtfläche",manpower:"Belegschaft",skilled_emp:"Qualifizierte Mitarbeiter",ops_tag:"Betrieb",in_yarn:"Hauseigenes Garn",dyeing:"Färbung",sizing:"Schlichten",weaving:"Weben",finishing:"Veredlung",quality:"Qualitätssicherung",sust_tag:"Nachhaltigkeit",raw_mat:"Rohstoffe",raw_mat_d:"PCW, PIW, recyceltes Polyester, regenerierte Baumwolle, Naturfasern",green_chem:"Grüne Chemikalien",green_chem_d:"Anilinfrei-Indigo, ungefährliche Chemikalien, Kaustik-Rückgewinnung",eco_dye:"Öko-Färbung",eco_dye_d:"Kaktustechnologie (90% Wassereinsparung), CleanKore ökologisch",water_save:"Wassereinsparung",water_save_d:"Biologische ETP, Zyklon-Prozess mit Recyclingwasser beim Färben",co2_red:"CO₂-Reduktion",co2_red_d:"EGB & Economizer 30, Wiederverwendung von 30% Recyclingwasser",prod_tag:"Produktportfolio",shade_v:"Farb-Varianten",stretch_v:"Dehn-Varianten",weave_v:"Web-Varianten",yarn_v:"Garn-Varianten",finish_v:"Finish-Varianten",coat_v:"Beschichtungs-Varianten",cert_tag:"Standards und Konformität",partners_tag:"Globale Partnerschaften",partners_sub:"Vertraut von den ikonischsten Modemarken der Welt",ty_bg:"DANKE",ty_line:"Danke",theme:"Design",autoplay:"Autoplay",language:"Sprache"},
+da:{tagline:"Et Årtis Denim-Ekspertise",biz_profile:"Virksomhedsprofil",est_tag:"Est. 2015 · Habiganj, Bangladesh",our_heritage:"Vores Historie",story_body:"SQUARE symboliserer i dag et navn — en tankegang. Siden 1958 som farmaceutisk virksomhed er den vokset til et af Bangladeshs mest succesrige konglomerater, banebrydende inden for diversificerede felter i seks årtier.",s_healthcare:"Sundhed",s_textile:"Tekstil",s_consumer:"Forbruger og Fødevarer",s_media:"Medier",s_aviation:"Luftfart",fin_overview:"Finansiel Oversigt",fin_title:"Koncernomsætning og Markedstilstedeværelse",group_turnover:"Koncernomsætning 2023–24",companies:"Virksomheder",market_cap:"Markedskapitalisering",listed:"Børsnoterede",listed_sub:"Pharma og Textiles",textile_tag:"Tekstildivision",text_body:"Sikrer 33% af koncernens omsætning, bygget på engagement for kvalitetsproduktion og løbende diversificering. Square trådte ind i tekstilbranchen i 1997 med spinding.",tc1:"Square Textiles A/S",tc1d:"Alsidig og anerkendt garneproducent.",tc2:"Square Fashions A/S",tc2d:"Producent af strikkede stoffer og beklædning.",tc3:"Square Denims A/S",tc3d:"Producent af denimstof og jeanswear.",tc4:"Square Apparels A/S",tc4d:"Producent af vævede stoffer og beklædning.",sd_tag:"Square Denims Limited",sd_body:"Baseret i Habiganj, det nordøstlige Bangladesh, blev denne denimfabrik grundlagt i 2015 med banebrydende maskiner til at producere en bred vifte af denimtekstiler, og er en af landets mest innovative producenter.",insert_factory:"Indsæt Fabriksbillede",founded:"Grundlagt",cap_tag:"Produktionskapacitet",cap_prod:"Produktion",per_month:"pr. måned",cap_loom:"Væve",total_looms:"Installerede væve i alt",cap_dye:"Farvning",dye_sub:"2 reb + 1 slasher",cap_finish:"Finish",modern_tech:"Moderne Teknologi",finish_sub:"Avancerede teknologier",cap_area:"Fabriksareal",total_area:"Samlet fabriksareal",manpower:"Arbejdsstyrke",skilled_emp:"Faglærte medarbejdere",ops_tag:"Drift",in_yarn:"Internt Garn",dyeing:"Farvning",sizing:"Sizing",weaving:"Vævning",finishing:"Finish",quality:"Kvalitetssikring",sust_tag:"Bæredygtighed",raw_mat:"Råmaterialer",raw_mat_d:"PCW, PIW, genbrugspolyester, regenereret bomuld, naturfibre",green_chem:"Grønne Kemikalier",green_chem_d:"Anilinfrit indigo, ikke-farlige kemikalier, kaustisk genvinding",eco_dye:"Øko-Farvning",eco_dye_d:"Kaktus-teknologi (90% vandbesparelse), CleanKore",water_save:"Vandbesparelse",water_save_d:"Biologisk ETP, Cyclone-proces med genbrugsvand i farvning",co2_red:"CO₂-Reduktion",co2_red_d:"EGB og Economizer 30, genbrug af 30% genbrugsvand",prod_tag:"Produktportefølje",shade_v:"Farve-Varianter",stretch_v:"Stræk-Varianter",weave_v:"Væv-Varianter",yarn_v:"Garn-Varianter",finish_v:"Finish-Varianter",coat_v:"Belagte Varianter",cert_tag:"Standarder og Overholdelse",partners_tag:"Globale Partnerskaber",partners_sub:"Betroet af verdens mest ikoniske modebrands",ty_bg:"TAK",ty_line:"Tak",theme:"Tema",autoplay:"Auto-afspilning",language:"Sprog"},
+zh:{tagline:"十年牛仔布卓越品质",biz_profile:"企业简介",est_tag:"成立于2015年 · 孟加拉国哈比甘杰",our_heritage:"品牌历史",story_body:"SQUARE如今象征着一个名字——一种精神状态。自1958年作为制药企业成立以来，已发展成为孟加拉国最成功的企业集团之一，在六十年间开创了多个多元化领域。",s_healthcare:"医疗健康",s_textile:"纺织",s_consumer:"消费品与食品",s_media:"媒体",s_aviation:"航空",fin_overview:"财务概况",fin_title:"集团营业额与市场影响力",group_turnover:"2023-24年集团营业额",companies:"运营公司",market_cap:"市值",listed:"上市实体",listed_sub:"制药与纺织",textile_tag:"纺织部门",text_body:"占集团营业额33%，建立在对高质量生产和持续多元化承诺的基础上。Square于1997年以纺纱进入纺织业，如今拥有六家世界级实体。",tc1:"Square Textiles有限公司",tc1d:"多元化且享有盛誉的纱线制造商。",tc2:"Square Fashions有限公司",tc2d:"针织面料和服装制造商。",tc3:"Square Denims有限公司",tc3d:"牛仔布料和牛仔装制造商。",tc4:"Square Apparels有限公司",tc4d:"梭织及非牛仔面料和服装制造商。",sd_tag:"Square Denims Limited",sd_body:"位于孟加拉国东北部哈比甘杰，该牛仔布工厂于2015年成立，配备尖端机械以生产各种牛仔面料，成为该国最具创新性的面料制造商之一。",insert_factory:"插入工厂图片",founded:"成立年份",cap_tag:"生产能力",cap_prod:"产能",per_month:"每月",cap_loom:"织机",total_looms:"已安装织机总数",cap_dye:"染色设施",dye_sub:"2台绳染 + 1台slasher",cap_finish:"后整理",modern_tech:"现代技术",finish_sub:"先进的后整理技术",cap_area:"厂区面积",total_area:"厂区总面积",manpower:"人力资源",skilled_emp:"熟练员工",ops_tag:"运营",in_yarn:"自有纱线",dyeing:"染色",sizing:"浆纱",weaving:"织造",finishing:"后整理",quality:"质量保证",sust_tag:"可持续发展",raw_mat:"原材料",raw_mat_d:"PCW、PIW、再生聚酯、再生棉、天然纤维",green_chem:"绿色化学品",green_chem_d:"无苯胺靛蓝、无危害化学品、烧碱回收装置",eco_dye:"生态染色",eco_dye_d:"仙人掌技术（节水90%）、CleanKore生态染色",water_save:"节水举措",water_save_d:"生物ETP，使用回收水的旋风工艺",co2_red:"减少CO₂排放",co2_red_d:"EGB & Economizer 30，生产中30%回收水再利用",prod_tag:"产品组合",shade_v:"色调变体",stretch_v:"弹力变体",weave_v:"织法变体",yarn_v:"纱线变体",finish_v:"整理变体",coat_v:"涂层变体",cert_tag:"标准与合规",partners_tag:"全球合作伙伴",partners_sub:"受全球最具标志性时装品牌的信赖",ty_bg:"谢谢",ty_line:"谢谢",theme:"主题",autoplay:"自动播放",language:"语言"},
+ar:{tagline:"عقد من التميز في الدنيم",biz_profile:"الملف التجاري",est_tag:"تأسست 2015 · هابيغانج، بنغلاديش",our_heritage:"تاريخنا",story_body:"تمثل SQUARE اليوم اسمًا وحالة ذهنية. منذ تأسيسها عام 1958 كشركة صيدلانية، نمت لتصبح أحد أنجح التكتلات في بنغلاديش، رائدة في مجالات متنوعة على مدى ستة عقود.",s_healthcare:"الرعاية الصحية",s_textile:"المنسوجات",s_consumer:"المستهلك والغذاء",s_media:"الإعلام",s_aviation:"الطيران",fin_overview:"نظرة مالية",fin_title:"إيرادات المجموعة والحضور السوقي",group_turnover:"إيرادات المجموعة 2023-24",companies:"الشركات",market_cap:"القيمة السوقية",listed:"المدرجة في البورصة",listed_sub:"الصيدلة والمنسوجات",textile_tag:"قسم المنسوجات",text_body:"يضمن 33٪ من إيرادات المجموعة، مبني على الالتزام بجودة الإنتاج والتنويع المستمر. دخلت Square مجال المنسوجات عام 1997 بالغزل.",tc1:"Square Textiles المحدودة",tc1d:"مصنع غزل متعدد الاستخدامات ومعروف.",tc2:"Square Fashions المحدودة",tc2d:"مصنع أقمشة محبوكة وملابس.",tc3:"Square Denims المحدودة",tc3d:"مصنع أقمشة دنيم وملابس جينز.",tc4:"Square Apparels المحدودة",tc4d:"مصنع أقمشة منسوجة وملابس.",sd_tag:"Square Denims Limited",sd_body:"تقع في هابيغانج، شمال شرق بنغلاديش، تأسست عام 2015 بأحدث الآلات لإنتاج مجموعة واسعة من أقمشة الدنيم، وتعد واحدة من أكثر الشركات المصنعة ابتكارًا في البلاد.",insert_factory:"أدرج صورة المصنع",founded:"تأسست",cap_tag:"طاقة الإنتاج",cap_prod:"الإنتاج",per_month:"شهريًا",cap_loom:"الأنوال",total_looms:"إجمالي الأنوال المثبتة",cap_dye:"مرافق الصباغة",dye_sub:"2 طباق + 1 slasher",cap_finish:"التشطيب",modern_tech:"تقنية حديثة",finish_sub:"تقنيات متقدمة",cap_area:"مساحة المنشأة",total_area:"إجمالي مساحة المصنع",manpower:"القوى العاملة",skilled_emp:"موظفون ماهرون",ops_tag:"العمليات",in_yarn:"غزل داخلي",dyeing:"الصباغة",sizing:"التنشية",weaving:"النسج",finishing:"التشطيب",quality:"ضمان الجودة",sust_tag:"الاستدامة",raw_mat:"المواد الخام",raw_mat_d:"PCW، PIW، بوليستر معاد تدويره، قطن متجدد، ألياف طبيعية",green_chem:"المواد الكيميائية الخضراء",green_chem_d:"نيلة خالية من الأنيلين، مواد كيميائية غير ضارة، وحدة استعادة الكاوية",eco_dye:"الصباغة البيئية",eco_dye_d:"تقنية الصبار (توفير 90٪ من المياه)، CleanKore",water_save:"توفير المياه",water_save_d:"محطة معالجة بيولوجية، عملية سيكلون بمياه معاد تدويرها في الصباغة",co2_red:"تخفيض CO₂",co2_red_d:"EGB و Economizer 30، إعادة استخدام 30٪ مياه معاد تدويرها",prod_tag:"محفظة المنتجات",shade_v:"متغيرات الظل",stretch_v:"متغيرات التمدد",weave_v:"متغيرات النسج",yarn_v:"متغيرات الغزل",finish_v:"متغيرات التشطيب",coat_v:"المتغيرات المطلية",cert_tag:"المعايير والامتثال",partners_tag:"الشراكات العالمية",partners_sub:"موثوق به من قِبل أكثر العلامات التجارية للأزياء رمزية في العالم",ty_bg:"شكرًا",ty_line:"شكرًا",theme:"السمة",autoplay:"التشغيل التلقائي",language:"اللغة"},
+tr:{tagline:"Bir On Yıllık Denim Mükemmeliyeti",biz_profile:"İş Profili",est_tag:"Kur. 2015 · Habiganj, Bangladeş",our_heritage:"Mirasımız",story_body:"SQUARE bugün bir ismi — bir düşünce biçimini simgeliyor. 1958'de ilaç şirketi olarak kurulan SQUARE, altı on yıl boyunca çeşitli alanlarda öncü olarak Bangladeş'in en başarılı holdinglerinden biri haline gelmiştir.",s_healthcare:"Sağlık",s_textile:"Tekstil",s_consumer:"Tüketici ve Gıda",s_media:"Medya",s_aviation:"Havacılık",fin_overview:"Finansal Genel Bakış",fin_title:"Grup Cirosu ve Pazar Varlığı",group_turnover:"Grup Cirosu 2023–24",companies:"Şirketler",market_cap:"Piyasa Değeri",listed:"Borsada Listelenen",listed_sub:"İlaç ve Tekstil",textile_tag:"Tekstil Bölümü",text_body:"Grubun cirosunun %33'ünü güvence altına alarak kaliteli üretim ve sürekli çeşitlendirme taahhüdü üzerine inşa edilmiştir. Square, 1997'de iplik işiyle tekstile girmiş — bugün altı dünya standartlarında kuruluşa yayılmaktadır.",tc1:"Square Textiles Ltd.",tc1d:"Çok yönlü ve değerli iplik üreticisi.",tc2:"Square Fashions Ltd.",tc2d:"Örme Kumaş ve Giysi Üreticisi.",tc3:"Square Denims Ltd.",tc3d:"Denim Kumaş ve Kot Giysi Üreticisi.",tc4:"Square Apparels Ltd.",tc4d:"Dokuma ve Denim Olmayan Kumaş ve Giysi.",sd_tag:"Square Denims Limited",sd_body:"Bangladeş'in kuzey doğusundaki Habiganj'da yer alan bu denim fabrikası, 2015 yılında geniş bir denim kumaş yelpazesi üretmek için son teknoloji makinelerle kurulmuştur — ülkenin en yenilikçi kumaş üreticilerinden biri haline gelmiştir.",insert_factory:"Fabrika Görseli Ekle",founded:"Kuruluş",cap_tag:"Üretim Kapasitesi",cap_prod:"Üretim",per_month:"aylık",cap_loom:"Dokuma Tezgahları",total_looms:"Toplam kurulu tezgah",cap_dye:"Boyama",dye_sub:"2 ip + 1 slasher",cap_finish:"Bitim İşlemi",modern_tech:"Modern Teknoloji",finish_sub:"Gelişmiş teknolojiler",cap_area:"Tesis Alanı",total_area:"Toplam tesis alanı",manpower:"İnsan Kaynağı",skilled_emp:"Nitelikli çalışanlar",ops_tag:"Operasyonlar",in_yarn:"Dahili İplik",dyeing:"Boyama",sizing:"Haşıllama",weaving:"Dokuma",finishing:"Bitim",quality:"Kalite Güvencesi",sust_tag:"Sürdürülebilirlik",raw_mat:"Ham Maddeler",raw_mat_d:"PCW, PIW, Geri dönüştürülmüş polyester, Yenilenmiş pamuk, Doğal lifler",green_chem:"Yeşil Kimyasallar",green_chem_d:"Anilinsiz indigo, Tehlikesiz kimyasallar, Kostik kurtarma tesisi",eco_dye:"Eko Boyama",eco_dye_d:"Kaktüs teknolojisi (%90 su tasarrufu), CleanKore çevre dostu boyama",water_save:"Su Tasarrufu",water_save_d:"Biyolojik AAT, boyamada geri dönüştürülmüş su kullanan Cyclone süreci",co2_red:"CO₂ Azaltımı",co2_red_d:"EGB ve Economizer 30, üretimde %30 geri dönüştürülmüş su yeniden kullanımı",prod_tag:"Ürün Portföyü",shade_v:"Renk Varyantları",stretch_v:"Esneklik Varyantları",weave_v:"Dokuma Varyantları",yarn_v:"İplik Varyantları",finish_v:"Bitim Varyantları",coat_v:"Kaplama Varyantları",cert_tag:"Standartlar ve Uyum",partners_tag:"Küresel Ortaklıklar",partners_sub:"Dünyanın en ikonik moda markalarının güvendiği",ty_bg:"TEŞEKKÜRLER",ty_line:"Teşekkür Ederiz",theme:"Tema",autoplay:"Otomatik Oynatma",language:"Dil"},
+ru:{tagline:"Десятилетие Джинсового Совершенства",biz_profile:"Бизнес-Профиль",est_tag:"Осн. 2015 · Хабигандж, Бангладеш",our_heritage:"Наша История",story_body:"SQUARE сегодня символизирует имя — состояние ума. С 1958 года как фармацевтическая компания выросла в один из самых успешных конгломератов Бангладеш, будучи пионером в разнообразных сферах на протяжении шести десятилетий.",s_healthcare:"Здравоохранение",s_textile:"Текстиль",s_consumer:"Потребительские товары и продукты",s_media:"СМИ",s_aviation:"Авиация",fin_overview:"Финансовый Обзор",fin_title:"Оборот Группы и Рыночное Присутствие",group_turnover:"Оборот Группы 2023–24",companies:"Компании",market_cap:"Рыночная Капитализация",listed:"Листинговые Компании",listed_sub:"Фарма и Текстиль",textile_tag:"Текстильный Дивизион",text_body:"Обеспечивает 33% оборота группы, построен на приверженности качественному производству и непрерывной диверсификации. Square вошла в текстильную отрасль в 1997 году с прядения.",tc1:"Square Textiles ООО",tc1d:"Универсальный и признанный производитель пряжи.",tc2:"Square Fashions ООО",tc2d:"Производитель трикотажных тканей и одежды.",tc3:"Square Denims ООО",tc3d:"Производитель джинсовой ткани и джинсов.",tc4:"Square Apparels ООО",tc4d:"Производитель тканых изделий и одежды.",sd_tag:"Square Denims Limited",sd_body:"Расположена в Хабиганже, на северо-востоке Бангладеш, фабрика основана в 2015 году с передовым оборудованием для производства широкого ассортимента джинсовых тканей, являясь одним из наиболее инновационных производителей страны.",insert_factory:"Вставить Изображение Фабрики",founded:"Основана",cap_tag:"Производственные Мощности",cap_prod:"Производство",per_month:"в месяц",cap_loom:"Ткацкие Станки",total_looms:"Установлено станков всего",cap_dye:"Крашение",dye_sub:"2 верёвки + 1 slasher",cap_finish:"Отделка",modern_tech:"Современные Технологии",finish_sub:"Передовые технологии",cap_area:"Площадь Предприятия",total_area:"Общая площадь",manpower:"Персонал",skilled_emp:"Квалифицированные сотрудники",ops_tag:"Операции",in_yarn:"Своя Пряжа",dyeing:"Крашение",sizing:"Шлихтование",weaving:"Ткачество",finishing:"Отделка",quality:"Контроль Качества",sust_tag:"Устойчивость",raw_mat:"Сырьё",raw_mat_d:"PCW, PIW, переработанный полиэстер, регенерированный хлопок, натуральные волокна",green_chem:"Зелёные Химикаты",green_chem_d:"Индиго без анилина, нетоксичные химикаты, установка регенерации каустика",eco_dye:"Экологичное Крашение",eco_dye_d:"Технология Cactus (экономия воды 90%), CleanKore",water_save:"Экономия Воды",water_save_d:"Биологическая ОС, процесс Cyclone с оборотной водой при крашении",co2_red:"Снижение CO₂",co2_red_d:"EGB & Economizer 30, повторное использование 30% оборотной воды",prod_tag:"Продуктовый Портфель",shade_v:"Вариации Оттенков",stretch_v:"Вариации Растяжения",weave_v:"Вариации Переплетения",yarn_v:"Вариации Пряжи",finish_v:"Вариации Отделки",coat_v:"Покрытые Вариации",cert_tag:"Стандарты и Соответствие",partners_tag:"Глобальные Партнёрства",partners_sub:"Доверие мировых иконических модных брендов",ty_bg:"СПАСИБО",ty_line:"Спасибо",theme:"Тема",autoplay:"Авто-воспр.",language:"Язык"}
+};
+
+// ── Extended translation keys (all slides, all languages) ──
+(function(){
+  const ext = {
+    en:{
+      sdl_url:"www.squaredenims.com",
+      story_title:"The Story of <span style='font-weight:700;color:#fff;'>Square</span>",
+      donut_lbl:"GROUP TURNOVER",
+      l_healthcare:"Healthcare",l_textiles:"Textiles",l_fmcg:"FMCG",l_others:"Others",
+      textile_title:"Square <span style='color:#fff;'>Textile</span> <span style='font-weight:700;color:#fff;'>Division</span>",
+      sdl_h2:"Square <span class='t-blue'>Denims</span> Limited",
+      sdl_loc:"Habiganj, Bangladesh",
+      vi_tag:"Vertical Integration",
+      vi_title:"Vertical <span style='color:var(--primary);'>Setup</span>",
+      vi_sub:"From Yarn to Finished Garment under one roof",
+      vs_s1:"Spinning",vs_s1d:"In-house yarn production, 240 MT/day capacity",
+      vs_s2:"Dyeing",vs_s2d:"Rope & slasher dyeing, 2 Morrison sets",
+      vs_s3:"Weaving",vs_s3d:"324 looms — airjet & rapier technology",
+      vs_s4:"Stitching",vs_s4d:"Finished garment, ready for global brands",
+      cap_title:"<span style='font-weight:700;'>Fabric Unit</span> <span style='font-weight:700;color:#fff;'>Capacity</span>",
+      ops_title:"Operational <span class='t-blue'>Strengths</span>",
+      ops_yarn1:"Total: 240 MT/day",ops_yarn2:"Denim yarn: 90 MT/day",
+      ops_dye1:"Morrison set: 36 rope",ops_dye2:"Morrison set: 40 rope",ops_dye3:"1 slasher machine",
+      ops_siz1:"Karl Mayer & Ukil",ops_siz2:"Double Nip + Double Dip",
+      ops_weav1:"Airjet: 216 machines",ops_weav2:"Rapier: 108 machines",
+      ops_fin1:"01 Singeing (Osthoff)",ops_fin2:"02 Stenter (Monfongs)",
+      ops_fin3:"01 Mercerization (Goller)",ops_fin4:"02 Sanfor (Morrison)",
+      ops_qa1:"4-point measuring system",ops_qa2:"Applied on all fabrics",
+      sust_title:"Sustainable <span style='color:rgba(255,255,255,0.7);'>Practices</span>",
+      prod_title:"Product <span class='t-blue'>Range</span>",
+      pv_shade1:"100% pure deep or light indigo",pv_shade2:"Sulphur topping/bottoming",pv_shade3:"100% sulphur or reactive colors",
+      pv_str1:"Horizontal stretch",pv_str2:"Vertical stretch",pv_str3:"4-way stretch",
+      pv_weav1:"3/1 RHT, 3/1 LHT, 2/1 RHT",pv_weav2:"Knit-look, Stripes & check",pv_weav3:"Double face & canvas denim",
+      pv_yarn1:"Viscose/Tencel/Linen blended",pv_yarn2:"Siro spun, PC/CVC yarn",pv_yarn3:"Elastane/T400, Indigo dyed weft",
+      pv_fin1:"Mercerize",pv_fin2:"Overdyed",pv_fin3:"Calendaring",
+      pv_coat1:"Polyurethane coats",pv_coat2:"Acrylic coats",pv_coat3:"Shiny coats",
+      cert_title:"Global <span style='color:#fff;'>Certifications</span>",
+      partners_title:"Business <span style='color:#fff;'>Partners</span>"
+    },
+    es:{
+      sdl_url:"www.squaredenims.com",
+      story_title:"La Historia de <span style='font-weight:700;color:#fff;'>Square</span>",
+      donut_lbl:"FACTURACIÓN",l_healthcare:"Salud",l_textiles:"Textil",l_fmcg:"FMCG",l_others:"Otros",
+      textile_title:"Square División Textil",sdl_h2:"Square Denims Limited",sdl_loc:"Habiganj, Bangladesh",
+      vi_tag:"Integración Vertical",vi_title:"Configuración Vertical",vi_sub:"Del hilo a la prenda acabada bajo un mismo techo",
+      vs_s1:"Hilado",vs_s1d:"Producción de hilo propia, 240 MT/día",
+      vs_s2:"Tintura",vs_s2d:"Tintura de cuerda y slasher, 2 juegos Morrison",
+      vs_s3:"Tejido",vs_s3d:"324 telares — tecnología airjet y rapier",
+      vs_s4:"Costura",vs_s4d:"Prendas acabadas, listas para marcas globales",
+      cap_title:"Capacidad de la Unidad Textil",ops_title:"Fortalezas Operativas",
+      ops_yarn1:"Total: 240 TM/día",ops_yarn2:"Hilo denim: 90 TM/día",
+      ops_dye1:"Set Morrison: 36 cuerdas",ops_dye2:"Set Morrison: 40 cuerdas",ops_dye3:"1 máquina slasher",
+      ops_siz1:"Karl Mayer & Ukil",ops_siz2:"Doble Nip + Doble Dip",
+      ops_weav1:"Airjet: 216 máquinas",ops_weav2:"Rapier: 108 máquinas",
+      ops_fin1:"01 Chamuscado (Osthoff)",ops_fin2:"02 Tensora (Monfongs)",ops_fin3:"01 Mercerización (Goller)",ops_fin4:"02 Sanforizado (Morrison)",
+      ops_qa1:"Sistema de medición de 4 puntos",ops_qa2:"Aplicado en todos los tejidos",
+      sust_title:"Prácticas Sostenibles",prod_title:"Gama de Productos",
+      pv_shade1:"Índigo 100% puro, profundo o claro",pv_shade2:"Azufre superior/inferior",pv_shade3:"Colores 100% azufre o reactivos",
+      pv_str1:"Estiramiento horizontal",pv_str2:"Estiramiento vertical",pv_str3:"Stretch en 4 sentidos",
+      pv_weav1:"3/1 RHT, 3/1 LHT, 2/1 RHT",pv_weav2:"Aspecto punto, rayas y cuadros",pv_weav3:"Doble cara y denim canvas",
+      pv_yarn1:"Mezcla viscosa/Tencel/lino",pv_yarn2:"Hilo Siro, PC/CVC",pv_yarn3:"Elastano/T400, trama índigo",
+      pv_fin1:"Mercerizado",pv_fin2:"Sobreteñido",pv_fin3:"Calandrado",
+      pv_coat1:"Recubrimientos de poliuretano",pv_coat2:"Recubrimientos acrílicos",pv_coat3:"Recubrimientos brillantes",
+      cert_title:"Certificaciones Globales",partners_title:"Socios Comerciales"
+    },
+    it:{
+      sdl_url:"www.squaredenims.com",
+      story_title:"La Storia di <span style='font-weight:700;color:#fff;'>Square</span>",
+      donut_lbl:"FATTURATO",l_healthcare:"Salute",l_textiles:"Tessile",l_fmcg:"FMCG",l_others:"Altri",
+      textile_title:"Square Divisione Tessile",sdl_h2:"Square Denims Limited",sdl_loc:"Habiganj, Bangladesh",
+      vi_tag:"Integrazione Verticale",vi_title:"Configurazione Verticale",vi_sub:"Dal filo al capo finito sotto un unico tetto",
+      vs_s1:"Filatura",vs_s1d:"Produzione interna di filo, 240 MT/giorno",
+      vs_s2:"Tintura",vs_s2d:"Tintura a corda e slasher, 2 set Morrison",
+      vs_s3:"Tessitura",vs_s3d:"324 telai — tecnologia airjet e rapier",
+      vs_s4:"Cucitura",vs_s4d:"Capo finito, pronto per i marchi globali",
+      cap_title:"Capacità dell'Unità Tessile",ops_title:"Punti di Forza Operativi",
+      ops_yarn1:"Totale: 240 MT/giorno",ops_yarn2:"Filato denim: 90 MT/giorno",
+      ops_dye1:"Set Morrison: 36 corde",ops_dye2:"Set Morrison: 40 corde",ops_dye3:"1 macchina slasher",
+      ops_siz1:"Karl Mayer & Ukil",ops_siz2:"Doppio Nip + Doppio Dip",
+      ops_weav1:"Airjet: 216 macchine",ops_weav2:"Rapier: 108 macchine",
+      ops_fin1:"01 Bruciatura (Osthoff)",ops_fin2:"02 Stenditore (Monfongs)",ops_fin3:"01 Mercerizzazione (Goller)",ops_fin4:"02 Sanforizzazione (Morrison)",
+      ops_qa1:"Sistema di misurazione a 4 punti",ops_qa2:"Applicato su tutti i tessuti",
+      sust_title:"Pratiche Sostenibili",prod_title:"Gamma di Prodotti",
+      pv_shade1:"Indaco 100% puro, scuro o chiaro",pv_shade2:"Sovratintura a zolfo",pv_shade3:"Colori 100% zolfo o reattivi",
+      pv_str1:"Elasticità orizzontale",pv_str2:"Elasticità verticale",pv_str3:"Elasticità a 4 vie",
+      pv_weav1:"3/1 RHT, 3/1 LHT, 2/1 RHT",pv_weav2:"Aspetto maglia, righe e quadri",pv_weav3:"Doppio fronte e denim canvas",
+      pv_yarn1:"Misto viscosa/Tencel/lino",pv_yarn2:"Filato Siro, PC/CVC",pv_yarn3:"Elastan/T400, trama indaco",
+      pv_fin1:"Mercerizzato",pv_fin2:"Sovratingitura",pv_fin3:"Calandratura",
+      pv_coat1:"Rivestimenti in poliuretano",pv_coat2:"Rivestimenti acrilici",pv_coat3:"Rivestimenti lucidi",
+      cert_title:"Certificazioni Globali",partners_title:"Partner Commerciali"
+    },
+    fr:{
+      sdl_url:"www.squaredenims.com",
+      story_title:"L'Histoire de <span style='font-weight:700;color:#fff;'>Square</span>",
+      donut_lbl:"CHIFFRE D'AFFAIRES",l_healthcare:"Santé",l_textiles:"Textile",l_fmcg:"FMCG",l_others:"Autres",
+      textile_title:"Square Division Textile",sdl_h2:"Square Denims Limited",sdl_loc:"Habiganj, Bangladesh",
+      vi_tag:"Intégration Verticale",vi_title:"Configuration Verticale",vi_sub:"Du fil au vêtement fini sous un même toit",
+      vs_s1:"Filage",vs_s1d:"Production de fil en interne, 240 MT/jour",
+      vs_s2:"Teinture",vs_s2d:"Teinture corde & slasher, 2 ensembles Morrison",
+      vs_s3:"Tissage",vs_s3d:"324 métiers — technologie airjet et rapier",
+      vs_s4:"Couture",vs_s4d:"Vêtement fini, prêt pour les marques mondiales",
+      cap_title:"Capacité de l'Unité Textile",ops_title:"Forces Opérationnelles",
+      ops_yarn1:"Total: 240 MT/jour",ops_yarn2:"Fil denim: 90 MT/jour",
+      ops_dye1:"Set Morrison: 36 cordes",ops_dye2:"Set Morrison: 40 cordes",ops_dye3:"1 machine slasher",
+      ops_siz1:"Karl Mayer & Ukil",ops_siz2:"Double Nip + Double Dip",
+      ops_weav1:"Airjet: 216 machines",ops_weav2:"Rapier: 108 machines",
+      ops_fin1:"01 Flambage (Osthoff)",ops_fin2:"02 Rame (Monfongs)",ops_fin3:"01 Mercerisage (Goller)",ops_fin4:"02 Sanforisation (Morrison)",
+      ops_qa1:"Système de mesure à 4 points",ops_qa2:"Appliqué sur tous les tissus",
+      sust_title:"Pratiques Durables",prod_title:"Gamme de Produits",
+      pv_shade1:"Indigo 100% pur, profond ou clair",pv_shade2:"Soufre en coiffage/fond",pv_shade3:"Couleurs 100% soufre ou réactives",
+      pv_str1:"Stretch horizontal",pv_str2:"Stretch vertical",pv_str3:"Stretch 4 sens",
+      pv_weav1:"3/1 RHT, 3/1 LHT, 2/1 RHT",pv_weav2:"Aspect maille, rayures et carreaux",pv_weav3:"Double face & denim canvas",
+      pv_yarn1:"Mélange viscose/Tencel/lin",pv_yarn2:"Fil Siro, PC/CVC",pv_yarn3:"Élasthanne/T400, trame indigo",
+      pv_fin1:"Mercerisé",pv_fin2:"Surteinture",pv_fin3:"Calandrage",
+      pv_coat1:"Revêtements polyuréthane",pv_coat2:"Revêtements acryliques",pv_coat3:"Revêtements brillants",
+      cert_title:"Certifications Mondiales",partners_title:"Partenaires Commerciaux"
+    },
+    de:{
+      sdl_url:"www.squaredenims.com",
+      story_title:"Die Geschichte von <span style='font-weight:700;color:#fff;'>Square</span>",
+      donut_lbl:"KONZERNUMSATZ",l_healthcare:"Gesundheit",l_textiles:"Textil",l_fmcg:"FMCG",l_others:"Andere",
+      textile_title:"Square Textil-Abteilung",sdl_h2:"Square Denims Limited",sdl_loc:"Habiganj, Bangladesh",
+      vi_tag:"Vertikale Integration",vi_title:"Vertikale Aufstellung",vi_sub:"Vom Garn zum fertigen Kleidungsstück unter einem Dach",
+      vs_s1:"Spinnen",vs_s1d:"Hauseigene Garnproduktion, 240 MT/Tag",
+      vs_s2:"Färbung",vs_s2d:"Seil- & Schlichtfärben, 2 Morrison-Sets",
+      vs_s3:"Weben",vs_s3d:"324 Webmaschinen — Airjet & Rapier Technologie",
+      vs_s4:"Näherei",vs_s4d:"Fertigkleidungsstück, bereit für globale Marken",
+      cap_title:"Kapazität der Textilabteilung",ops_title:"Betriebliche Stärken",
+      ops_yarn1:"Gesamt: 240 MT/Tag",ops_yarn2:"Denim-Garn: 90 MT/Tag",
+      ops_dye1:"Morrison-Set: 36 Seile",ops_dye2:"Morrison-Set: 40 Seile",ops_dye3:"1 Slasher-Maschine",
+      ops_siz1:"Karl Mayer & Ukil",ops_siz2:"Doppel-Nip + Doppel-Dip",
+      ops_weav1:"Airjet: 216 Maschinen",ops_weav2:"Rapier: 108 Maschinen",
+      ops_fin1:"01 Sengen (Osthoff)",ops_fin2:"02 Spannrahmen (Monfongs)",ops_fin3:"01 Mercerisierung (Goller)",ops_fin4:"02 Sanforisierung (Morrison)",
+      ops_qa1:"4-Punkte-Messsystem",ops_qa2:"Auf alle Gewebe angewendet",
+      sust_title:"Nachhaltige Praktiken",prod_title:"Produktpalette",
+      pv_shade1:"100% reiner Indigo, tief oder hell",pv_shade2:"Schwefel-Topping/Bottoming",pv_shade3:"100% Schwefel- oder Reaktivfarben",
+      pv_str1:"Horizontaler Stretch",pv_str2:"Vertikaler Stretch",pv_str3:"4-Wege-Stretch",
+      pv_weav1:"3/1 RHT, 3/1 LHT, 2/1 RHT",pv_weav2:"Strick-Optik, Streifen & Karo",pv_weav3:"Doppelgewebe & Canvas-Denim",
+      pv_yarn1:"Viskose/Tencel/Leinen-Mischung",pv_yarn2:"Siro-Garn, PC/CVC",pv_yarn3:"Elastan/T400, Indigogefärbter Schuss",
+      pv_fin1:"Mercerisiert",pv_fin2:"Überfärbt",pv_fin3:"Kalandriert",
+      pv_coat1:"Polyurethanbeschichtungen",pv_coat2:"Acrylbeschichtungen",pv_coat3:"Glänzende Beschichtungen",
+      cert_title:"Globale Zertifizierungen",partners_title:"Geschäftspartner"
+    },
+    da:{
+      sdl_url:"www.squaredenims.com",
+      story_title:"Historien om <span style='font-weight:700;color:#fff;'>Square</span>",
+      donut_lbl:"KONCERNOMSÆTNING",l_healthcare:"Sundhed",l_textiles:"Tekstil",l_fmcg:"FMCG",l_others:"Andre",
+      textile_title:"Square Tekstildivision",sdl_h2:"Square Denims Limited",sdl_loc:"Habiganj, Bangladesh",
+      vi_tag:"Vertikal Integration",vi_title:"Vertikal Opsætning",vi_sub:"Fra garn til færdigt tøj under ét tag",
+      vs_s1:"Spinding",vs_s1d:"Intern garnproduktion, 240 MT/dag",
+      vs_s2:"Farvning",vs_s2d:"Reb- & slasher-farvning, 2 Morrison-sæt",
+      vs_s3:"Vævning",vs_s3d:"324 væve — airjet & rapier teknologi",
+      vs_s4:"Syning",vs_s4d:"Færdigt tøj, klar til globale brands",
+      cap_title:"Fabriksenhedens Kapacitet",ops_title:"Operationelle Styrker",
+      ops_yarn1:"I alt: 240 MT/dag",ops_yarn2:"Denimgarn: 90 MT/dag",
+      ops_dye1:"Morrison-sæt: 36 reb",ops_dye2:"Morrison-sæt: 40 reb",ops_dye3:"1 slasher-maskine",
+      ops_siz1:"Karl Mayer & Ukil",ops_siz2:"Dobbelt Nip + Dobbelt Dip",
+      ops_weav1:"Airjet: 216 maskiner",ops_weav2:"Rapier: 108 maskiner",
+      ops_fin1:"01 Sviding (Osthoff)",ops_fin2:"02 Stenter (Monfongs)",ops_fin3:"01 Mercerisering (Goller)",ops_fin4:"02 Sanforisering (Morrison)",
+      ops_qa1:"4-punkts målesystem",ops_qa2:"Anvendt på alle stoffer",
+      sust_title:"Bæredygtige Praksisser",prod_title:"Produktsortiment",
+      pv_shade1:"100% rent indigo, dybt eller lyst",pv_shade2:"Svovl topping/bottoming",pv_shade3:"100% svovl- eller reaktivfarver",
+      pv_str1:"Vandret stræk",pv_str2:"Lodret stræk",pv_str3:"4-vejs stræk",
+      pv_weav1:"3/1 RHT, 3/1 LHT, 2/1 RHT",pv_weav2:"Strik-look, striber og tern",pv_weav3:"Dobbeltsidet og canvas denim",
+      pv_yarn1:"Viskose/Tencel/hørblanding",pv_yarn2:"Siro-spundet, PC/CVC",pv_yarn3:"Elastan/T400, indigofarvede islæt",
+      pv_fin1:"Merceriseret",pv_fin2:"Overdejing",pv_fin3:"Kalandrering",
+      pv_coat1:"Polyurethanbeklædning",pv_coat2:"Acrylbeklædning",pv_coat3:"Skinnende beklædning",
+      cert_title:"Globale Certificeringer",partners_title:"Forretningspartnere"
+    },
+    zh:{
+      sdl_url:"www.squaredenims.com",
+      story_title:"<span style='font-weight:700;color:#fff;'>Square</span> 的故事",
+      donut_lbl:"集团营业额",l_healthcare:"医疗健康",l_textiles:"纺织",l_fmcg:"快消品",l_others:"其他",
+      textile_title:"Square 纺织部门",sdl_h2:"Square Denims 有限公司",sdl_loc:"孟加拉国哈比甘杰",
+      vi_tag:"垂直整合",vi_title:"垂直架构",vi_sub:"从纱线到成品服装，一体化生产",
+      vs_s1:"纺纱",vs_s1d:"自有纱线生产，240 MT/天",
+      vs_s2:"染色",vs_s2d:"绳染和浆染，2套Morrison设备",
+      vs_s3:"织造",vs_s3d:"324台织机——气喷和剑杆技术",
+      vs_s4:"缝制",vs_s4d:"成品服装，为全球品牌服务",
+      cap_title:"面料生产单元产能",ops_title:"运营优势",
+      ops_yarn1:"合计：240 吨/天",ops_yarn2:"牛仔纱：90 吨/天",
+      ops_dye1:"Morrison 套组：36 绳",ops_dye2:"Morrison 套组：40 绳",ops_dye3:"1 台浆纱机",
+      ops_siz1:"Karl Mayer & Ukil",ops_siz2:"双辊夹 + 双浸渍",
+      ops_weav1:"气喷：216 台",ops_weav2:"剑杆：108 台",
+      ops_fin1:"01 烧毛 (Osthoff)",ops_fin2:"02 拉幅定型 (Monfongs)",ops_fin3:"01 丝光处理 (Goller)",ops_fin4:"02 预缩 (Morrison)",
+      ops_qa1:"四点检验系统",ops_qa2:"适用于所有面料",
+      sust_title:"可持续发展实践",prod_title:"产品系列",
+      pv_shade1:"100%纯深或浅靛蓝",pv_shade2:"硫化染料覆盖/底色",pv_shade3:"100%硫化或活性染料色彩",
+      pv_str1:"横向弹力",pv_str2:"纵向弹力",pv_str3:"四向弹力",
+      pv_weav1:"3/1 RHT, 3/1 LHT, 2/1 RHT",pv_weav2:"针织感、条纹及格纹",pv_weav3:"双面及帆布牛仔",
+      pv_yarn1:"粘胶/天丝/亚麻混纺",pv_yarn2:"赛络纺，PC/CVC纱",pv_yarn3:"弹力丝/T400，靛蓝染色纬纱",
+      pv_fin1:"丝光",pv_fin2:"套色覆染",pv_fin3:"轧光",
+      pv_coat1:"聚氨酯涂层",pv_coat2:"丙烯酸涂层",pv_coat3:"光泽涂层",
+      cert_title:"全球认证",partners_title:"商业伙伴"
+    },
+    ar:{
+      sdl_url:"www.squaredenims.com",
+      story_title:"قصة <span style='font-weight:700;color:#fff;'>Square</span>",
+      donut_lbl:"إيرادات المجموعة",l_healthcare:"الرعاية الصحية",l_textiles:"المنسوجات",l_fmcg:"السلع الاستهلاكية",l_others:"أخرى",
+      textile_title:"قسم Square للنسيج",sdl_h2:"Square Denims Limited",sdl_loc:"هابيغانج، بنغلاديش",
+      vi_tag:"التكامل العمودي",vi_title:"الإعداد العمودي",vi_sub:"من الغزل إلى الملبوسات الجاهزة تحت سقف واحد",
+      vs_s1:"الغزل",vs_s1d:"إنتاج داخلي للغزل، طاقة 240 طن/يوم",
+      vs_s2:"الصباغة",vs_s2d:"صباغة الحبل والـ slasher، مجموعتان Morrison",
+      vs_s3:"النسج",vs_s3d:"324 نولاً — تقنية airjet وrapier",
+      vs_s4:"التخييط",vs_s4d:"ملابس جاهزة للعلامات التجارية العالمية",
+      cap_title:"طاقة وحدة الأقمشة",ops_title:"نقاط القوة التشغيلية",
+      ops_yarn1:"الإجمالي: 240 طن/يوم",ops_yarn2:"غزل الدنيم: 90 طن/يوم",
+      ops_dye1:"مجموعة Morrison: 36 حبل",ops_dye2:"مجموعة Morrison: 40 حبل",ops_dye3:"آلة slasher واحدة",
+      ops_siz1:"Karl Mayer & Ukil",ops_siz2:"نيب مزدوج + غمس مزدوج",
+      ops_weav1:"Airjet: 216 آلة",ops_weav2:"Rapier: 108 آلة",
+      ops_fin1:"01 إزالة الوبرة (Osthoff)",ops_fin2:"02 التمديد الحراري (Monfongs)",ops_fin3:"01 المرسرة (Goller)",ops_fin4:"02 التقليص المسبق (Morrison)",
+      ops_qa1:"نظام القياس ذو 4 نقاط",ops_qa2:"مُطبَّق على جميع الأقمشة",
+      sust_title:"الممارسات المستدامة",prod_title:"نطاق المنتجات",
+      pv_shade1:"نيلة 100% نقية، غامقة أو فاتحة",pv_shade2:"طبقة كبريتية علوية/سفلية",pv_shade3:"ألوان كبريتية أو تفاعلية 100%",
+      pv_str1:"تمدد أفقي",pv_str2:"تمدد عمودي",pv_str3:"تمدد رباعي الاتجاهات",
+      pv_weav1:"3/1 RHT, 3/1 LHT, 2/1 RHT",pv_weav2:"مظهر محبوك، مخططات وتصاميم",pv_weav3:"وجهان وقماش دنيم كانفاس",
+      pv_yarn1:"مزيج فيسكوز/تنسيل/كتان",pv_yarn2:"غزل سيرو، PC/CVC",pv_yarn3:"إيلاستين/T400، لحمة مصبوغة بالنيلة",
+      pv_fin1:"مرسرة",pv_fin2:"صباغة مكثفة",pv_fin3:"كلندرة",
+      pv_coat1:"طبقات البولي يوريثان",pv_coat2:"طبقات الأكريليك",pv_coat3:"طبقات لامعة",
+      cert_title:"الشهادات العالمية",partners_title:"الشركاء التجاريون"
+    },
+    ru:{
+      sdl_url:"www.squaredenims.com",
+      story_title:"История <span style='font-weight:700;color:#fff;'>Square</span>",
+      donut_lbl:"ОБОРОТ ГРУППЫ",l_healthcare:"Здравоохранение",l_textiles:"Текстиль",l_fmcg:"FMCG",l_others:"Прочие",
+      textile_title:"Square Текстильное Подразделение",sdl_h2:"Square Denims Limited",sdl_loc:"Хабигандж, Бангладеш",
+      vi_tag:"Вертикальная Интеграция",vi_title:"Вертикальная Структура",vi_sub:"От пряжи до готового изделия под одной крышей",
+      vs_s1:"Прядение",vs_s1d:"Собственное производство пряжи, 240 MT/день",
+      vs_s2:"Крашение",vs_s2d:"Верёвочное и slasher крашение, 2 Morrison-комплекта",
+      vs_s3:"Ткачество",vs_s3d:"324 ткацких станка — Airjet & Rapier технологии",
+      vs_s4:"Пошив",vs_s4d:"Готовые изделия для мировых брендов",
+      cap_title:"Мощность Ткацкого Подразделения",ops_title:"Операционные Преимущества",
+      ops_yarn1:"Итого: 240 МТ/сутки",ops_yarn2:"Джинсовая пряжа: 90 МТ/сутки",
+      ops_dye1:"Комплект Morrison: 36 верёвок",ops_dye2:"Комплект Morrison: 40 верёвок",ops_dye3:"1 машина slasher",
+      ops_siz1:"Karl Mayer & Ukil",ops_siz2:"Двойной Нип + Двойное Погружение",
+      ops_weav1:"Airjet: 216 машин",ops_weav2:"Rapier: 108 машин",
+      ops_fin1:"01 Опаливание (Osthoff)",ops_fin2:"02 Стентерование (Monfongs)",ops_fin3:"01 Мерсеризация (Goller)",ops_fin4:"02 Санфоризация (Morrison)",
+      ops_qa1:"Система измерения «4 точки»",ops_qa2:"Применяется на всех тканях",
+      sust_title:"Устойчивые Практики",prod_title:"Ассортимент Продукции",
+      pv_shade1:"100% чистый индиго, тёмный или светлый",pv_shade2:"Серное покрытие сверху/снизу",pv_shade3:"100% серные или активные красители",
+      pv_str1:"Горизонтальное растяжение",pv_str2:"Вертикальное растяжение",pv_str3:"4-стороннее растяжение",
+      pv_weav1:"3/1 RHT, 3/1 LHT, 2/1 RHT",pv_weav2:"Трикотажный эффект, полоска и клетка",pv_weav3:"Двусторонняя и канвас-джинса",
+      pv_yarn1:"Смесь вискоза/Tencel/лён",pv_yarn2:"Сиро-пряжа, PC/CVC",pv_yarn3:"Эластан/T400, уток крашенный индиго",
+      pv_fin1:"Мерсеризация",pv_fin2:"Перекрашивание",pv_fin3:"Каландрирование",
+      pv_coat1:"Полиуретановые покрытия",pv_coat2:"Акриловые покрытия",pv_coat3:"Глянцевые покрытия",
+      cert_title:"Глобальные Сертификаты",partners_title:"Деловые Партнёры"
+    },
+    tr:{
+      sdl_url:"www.squaredenims.com",
+      story_title:"<span style='font-weight:700;color:#fff;'>Square</span>'ın Hikayesi",
+      donut_lbl:"GRUP CİROSU",l_healthcare:"Sağlık",l_textiles:"Tekstil",l_fmcg:"FMCG",l_others:"Diğerleri",
+      textile_title:"Square Tekstil Bölümü",sdl_h2:"Square Denims Limited",sdl_loc:"Habiganj, Bangladeş",
+      vi_tag:"Dikey Entegrasyon",vi_title:"Dikey Kurulum",vi_sub:"İplikten Bitmiş Giysilere Tek Çatı Altında",
+      vs_s1:"İplik",vs_s1d:"Dahili eğirme, 240 MT/gün kapasiteli",
+      vs_s2:"Boyama",vs_s2d:"İp ve slasher boyama, 2 Morrison seti",
+      vs_s3:"Dokuma",vs_s3d:"324 tezgah — airjet ve rapier teknolojisi",
+      vs_s4:"Dikim",vs_s4d:"Bitmiş giysi, küresel markalar için hazır",
+      cap_title:"Kumaş Birimi Kapasitesi",ops_title:"Operasyonel Güçler",
+      ops_yarn1:"Toplam: 240 MT/gün",ops_yarn2:"Denim ipliği: 90 MT/gün",
+      ops_dye1:"Morrison seti: 36 ip",ops_dye2:"Morrison seti: 40 ip",ops_dye3:"1 slasher makinesi",
+      ops_siz1:"Karl Mayer & Ukil",ops_siz2:"Çift Nip + Çift Dip",
+      ops_weav1:"Airjet: 216 makine",ops_weav2:"Rapier: 108 makine",
+      ops_fin1:"01 Yakma (Osthoff)",ops_fin2:"02 Stenter (Monfongs)",ops_fin3:"01 Merserizasyon (Goller)",ops_fin4:"02 Sanfor (Morrison)",
+      ops_qa1:"4 noktalı ölçüm sistemi",ops_qa2:"Tüm kumaşlara uygulanır",
+      sust_title:"Sürdürülebilir Uygulamalar",prod_title:"Ürün Serisi",
+      pv_shade1:"100% saf derin veya açık indigo",pv_shade2:"Sülfür üst/alt kat",pv_shade3:"100% sülfür veya reaktif renkler",
+      pv_str1:"Yatay esneme",pv_str2:"Dikey esneme",pv_str3:"4 yönlü esneme",
+      pv_weav1:"3/1 RHT, 3/1 LHT, 2/1 RHT",pv_weav2:"Triko görünümlü, çizgili ve ekose",pv_weav3:"Çift yüz ve kanvas denim",
+      pv_yarn1:"Viskon/Tencel/Keten karışımı",pv_yarn2:"Siro eğirme, PC/CVC ipliği",pv_yarn3:"Elastan/T400, indigo boyalı atkı",
+      pv_fin1:"Merserizasyon",pv_fin2:"Üst Boyama",pv_fin3:"Kalender",
+      pv_coat1:"Poliüretan kaplamalar",pv_coat2:"Akrilik kaplamalar",pv_coat3:"Parlak kaplamalar",
+      cert_title:"Küresel Sertifikalar",partners_title:"Ticari Ortaklar"
+    }
+  };
+  Object.keys(ext).forEach(l => { if(T[l]) Object.assign(T[l], ext[l]); });
+})();
+
+let lang = 'en';
+function setLang(l) {
+  lang = l;
+  const d = T[l] || T.en;
+  document.querySelectorAll('[data-k]').forEach(el => {
+    const k = el.getAttribute('data-k');
+    const txt = d[k] !== undefined ? d[k] : (T.en[k] !== undefined ? T.en[k] : null);
+    if (txt !== null) el.innerHTML = txt;
+  });
+}
+
+// ================================================================
+// SLIDE ENGINE
+// ================================================================
+const TOTAL = 13;
+let cur = 1, apDelay = 0, apTimer = null;
+
+const slides  = Array.from(document.querySelectorAll('.slide'));
+const dotsEl  = document.getElementById('nav-dots');
+const counter = document.getElementById('slide-counter');
+const pbar    = document.getElementById('progress-bar');
+const settBtn = document.getElementById('settings-btn');
+const settPan = document.getElementById('settings-panel');
+
+// Build dots
+for (let i = 1; i <= TOTAL; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i===1?' active':'');
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+}
+// Set initial dot colour based on slide 1 background
+document.body.classList.toggle('dark-bg', slides[0].classList.contains('slide-dark'));
+
+function goTo(n) {
+  if (n < 1 || n > TOTAL || n === cur) return;
+  const prev = cur - 1;
+  slides[prev].classList.remove('active');
+  slides[prev].classList.add('exit');
+  // Reset vs-line so it re-animates on next visit
+  if (prev === 5) {
+    const line = document.getElementById('vs-line-fill');
+    if (line) {
+      line.style.transition = 'none';
+      line.style.width = '0';
+      void line.offsetWidth; // force reflow
+    }
+  }
+  setTimeout(() => slides[prev].classList.remove('exit'), 700);
+  cur = n;
+  slides[cur-1].classList.add('active');
+  dotsEl.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i===cur-1));
+  document.body.classList.toggle('dark-bg', slides[cur-1].classList.contains('slide-dark'));
+  counter.textContent = cur + ' / ' + TOTAL;
+  pbar.style.width = ((cur/TOTAL)*100)+'%';
+  settBtn.classList.toggle('hidden', cur !== 1);
+  if (cur !== 1) settPan.classList.remove('open');
+  if (cur === 3) { setTimeout(buildDonut, 200); }
+  if (cur === 6) { setTimeout(() => {
+    const line = document.getElementById('vs-line-fill');
+    if (line) { line.style.transition = 'width 1.4s cubic-bezier(0.22,1,0.36,1) 0.4s'; line.style.width = '100%'; }
+  }, 300); }
+  if (apDelay > 0) startAP();
+}
+
+document.getElementById('btn-prev').onclick = () => goTo(cur-1);
+document.getElementById('btn-next').onclick = () => goTo(cur+1);
+document.addEventListener('keydown', e => {
+  if(['ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();goTo(cur+1);}
+  if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();goTo(cur-1);}
+});
+settBtn.addEventListener('click',e=>{e.stopPropagation();settPan.classList.toggle('open');});
+document.addEventListener('click',()=>settPan.classList.remove('open'));
+settPan.addEventListener('click',e=>e.stopPropagation());
+
+// ================================================================
+// AUTOPLAY
+// ================================================================
+function setAP(ms,btn){
+  apDelay=ms; clearInterval(apTimer);
+  document.querySelectorAll('.sg-row:nth-child(1) .ob').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  if(ms>0) startAP();
+}
+function startAP(){
+  clearInterval(apTimer);
+  apTimer=setInterval(()=>{if(cur<TOTAL)goTo(cur+1);else clearInterval(apTimer);},apDelay);
+}
+
+// ================================================================
+// DONUT CHART — r=76, circ = 2*PI*76 = 477.52
+// SVG rotated -90deg → offset=0 starts at 12 o'clock
+// Each segment offset = negative cumulative arc of all previous
+// ================================================================
+function buildDonut() {
+  const circ = 2 * Math.PI * 76;
+  const data = [
+    { pct: 43 },
+    { pct: 33 },
+    { pct: 20 },
+    { pct:  4 }
+  ];
+  let cumulative = 0;
+  data.forEach((d, i) => {
+    const arc = (d.pct / 100) * circ;
+    const el  = document.getElementById('dc-' + i);
+    if (!el) return;
+    el.setAttribute('stroke-dashoffset', -cumulative);
+    setTimeout(() => {
+      el.style.strokeDasharray = arc + ' ' + (circ - arc);
+    }, 80 + i * 170);
+    cumulative += arc;
+  });
+}
+
+// ================================================================
+// PARTNERS MARQUEE
+// ================================================================
+const partners=[
+  {name:'American Eagle', url:'https://i.postimg.cc/Fz2R80w5/american-eagle-outfitters.png'},
+  {name:'ASOS',           url:'https://i.postimg.cc/tCx7PmVD/Asos.png'},
+  {name:'Bestseller',     url:'https://i.postimg.cc/7Y8JBk4K/Bestseller.png'},
+  {name:'Calvin Klein',   url:'https://i.postimg.cc/PxvN46FK/CK.png'},
+  {name:'C&A',            url:'https://i.postimg.cc/4yCyFzDd/C-A-logo.png'},
+  {name:'Diesel',         url:'https://i.postimg.cc/q7Q6vbNh/Diesel-logo-svg.png'},
+  {name:'G-Star Raw',     url:'https://i.postimg.cc/gkHjNLNP/g-star.png'},
+  {name:'H&M',            url:'https://i.postimg.cc/x1jC7j4F/H-M.png'},
+  {name:'Kmart',          url:'https://i.postimg.cc/hG6tfLPM/Kmart.png'},
+  {name:'Kohl\'s',        url:'https://i.postimg.cc/59w22Fcz/Kohl-s.png'},
+  {name:'Lee',            url:'https://i.postimg.cc/660xPVJP/Lee.png'},
+  {name:'Marks & Spencer',url:'https://i.postimg.cc/8zx2vtM6/M-S.png'},
+  {name:'Next',           url:'https://i.postimg.cc/FzF8vq5q/Next.png'},
+  {name:'River Island',   url:'https://i.postimg.cc/bNJWFKRq/River-Island.png'},
+  {name:'S.Oliver',       url:'https://i.postimg.cc/Gp0ft9n4/SOliver-Logo.png'},
+  {name:'Tom Tailor',     url:'https://i.postimg.cc/d3SHYV9Q/Tom-tailor.png'},
+  {name:'Tommy Hilfiger', url:'https://i.postimg.cc/mDKjX5ZL/Tommy.png'},
+  {name:'Timberland',     url:'https://i.postimg.cc/HsD3bRhG/Timberland-Logo.png'},
+  {name:'Uniqlo',         url:'https://i.postimg.cc/FKGkHWYk/UNIQLO-logo-svg.png'},
+  {name:'Vans',           url:'https://i.postimg.cc/0jHWsyCy/Vans-Logo-1966.png'},
+  {name:'ZARA',           url:'https://i.postimg.cc/4yFLgx1N/Zara-Logo.png'}
+];
+
+function makeCard(p) {
+  const el = document.createElement('div');
+  el.className = 'partner-logo-card';
+  el.innerHTML = `
+    <img
+      src="${p.url}"
+      alt="${p.name}"
+      style="height:38px;width:auto;max-width:120px;object-fit:contain;
+             filter:brightness(0) invert(1) opacity(0.65);
+             transition:filter 0.32s ease;"
+      onmouseover="this.style.filter='brightness(1) invert(0) saturate(1.1) opacity(1)'"
+      onmouseout="this.style.filter='brightness(0) invert(1) opacity(0.65)'"
+      onerror="this.style.display='none';this.parentNode.innerHTML='<span class=pname>${p.name}</span>'"
+    >`;
+  return el;
+}
+
+function buildMarquee(){
+  const t1=document.getElementById('track1');
+  const t2=document.getElementById('track2');
+  if(!t1||t1.children.length>0) return;
+
+  const half1 = partners.slice(0, 11);
+  const half2  = partners.slice(11);
+
+  // duplicate sets for seamless infinite loop
+  [...half1, ...half1].forEach(p => t1.appendChild(makeCard(p)));
+  [...half2, ...half2].forEach(p => t2.appendChild(makeCard(p)));
+}
+buildMarquee();
+
+// ================================================================
+// CURSOR
+// ================================================================
+const cur_el=document.getElementById('cursor');
+const ring_el=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+let idleTimer=null;
+
+function showCursor(){
+  cur_el.style.opacity='0.85';
+  cur_el.style.transition='opacity 0.3s';
+  ring_el.style.opacity='0.4';
+  ring_el.style.transition='opacity 0.3s';
+}
+function hideCursor(){
+  cur_el.style.opacity='0';
+  cur_el.style.transition='opacity 0.6s';
+  ring_el.style.opacity='0';
+  ring_el.style.transition='opacity 0.6s';
+}
+function resetIdleTimer(){
+  showCursor();
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(hideCursor, 10000);
+}
+
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  cur_el.style.left=mx+'px'; cur_el.style.top=my+'px';
+  resetIdleTimer();
+});
+
+function animRing(){
+  rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12;
+  ring_el.style.left=rx+'px'; ring_el.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+
+document.querySelectorAll('button,a,.arr-btn').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{
+    cur_el.style.width='28px'; cur_el.style.height='28px'; cur_el.style.opacity='0.4';
+    ring_el.style.width='56px'; ring_el.style.height='56px'; ring_el.style.borderColor='var(--accent)';
+  });
+  el.addEventListener('mouseleave',()=>{
+    cur_el.style.width='14px'; cur_el.style.height='14px'; cur_el.style.opacity='0.9';
+    ring_el.style.width='38px'; ring_el.style.height='38px';
+    ring_el.style.borderColor = document.body.classList.contains('dark-bg') ? 'var(--platinum)' : 'var(--primary)';
+    cur_el.style.background = document.body.classList.contains('dark-bg') ? 'var(--platinum)' : 'var(--primary)';
+  });
+});
+
+document.querySelectorAll('.dot').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{
+    cur_el.style.background='var(--accent)';
+    ring_el.style.borderColor='var(--accent)';
+  });
+  el.addEventListener('mouseleave',()=>{
+    cur_el.style.background = document.body.classList.contains('dark-bg') ? 'var(--platinum)' : 'var(--primary)';
+    ring_el.style.borderColor = document.body.classList.contains('dark-bg') ? 'var(--platinum)' : 'var(--primary)';
+  });
+});
+
+// Start idle timer on load
+resetIdleTimer();
+
+// Init
+pbar.style.width = ((1/TOTAL)*100)+'%';
+</script>
+</body>
+</html>
